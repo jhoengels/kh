@@ -101,19 +101,26 @@ class product_kardex_report(report_sxw.rml_parse):
                         account_invoice_id  = invoice_obj.search(self.cr,self.uid,[('origin','=',sale.name)]) # Obtenemos el id
                         if account_invoice_id:
                             for invoice in invoice_obj.browse(self.cr, self.uid, account_invoice_id):
-                                res.update({'n_fact': invoice.number })
+                                res.update({'n_fact': invoice.number or ''})
                 if move.picking_id.type in ('in'):
                     purchase_order_id = purchase_obj.search(self.cr,self.uid,[('name','=',move.origin)]) # Obtenemos el id
                     for purchase in purchase_obj.browse(self.cr, self.uid, purchase_order_id):
                         account_invoice_id  = invoice_obj.search(self.cr,self.uid,[('origin','ilike',purchase.name)]) # Obtenemos el id
                         if account_invoice_id:
                             for invoice in invoice_obj.browse(self.cr, self.uid, account_invoice_id):
-                                res.update({'n_fact': invoice.number })
+                                res.update({'n_fact': invoice.number or '' })
+            #para ver si es un movimiento de composicion
+            if move.make_move_id:
+                res.update({'n_guia': move.make_move_id.name })
+
+            #para ver si es un movimiento de ajuste de inventario
+            if move.ajuste_move_id:
+                res.update({'n_guia': move.ajuste_move_id.name })
 
             if move.location_id.id != locat_id[0] and move.location_dest_id.id == locat_id[0]:
                 move_qty_saldo = move_qty_saldo + move.product_qty
                 move_qty_total_in = move_qty_total_in + move.product_qty #suma vertical
-                logger.error("INNNNNN: %r", move_qty_total_in)
+                #logger.error("INNNNNN: %r", move_qty_total_in)
 
                 res.update({'product_qty_in': move.product_qty })
                 res.update({'move_saldo': move_qty_saldo })
@@ -138,6 +145,11 @@ class product_kardex_report(report_sxw.rml_parse):
                     res.update({'concept_move': 'COMPOSICION DE PRODUCTOS' })
                 if move.location_id.usage == 'composition' and move.location_dest_id.usage == 'internal':
                     res.update({'concept_move': 'COMPOSICION DE PRODUCTOS' })
+                #AJUSTE DE INVENTARIO
+                if move.location_id.usage == 'internal' and move.location_dest_id.usage == 'ajuste':
+                    res.update({'concept_move': 'SALIDA POR AJUSTE DE INVENTARIO' })
+                if move.location_id.usage == 'ajuste' and move.location_dest_id.usage == 'internal':
+                    res.update({'concept_move': 'INGRESO POR AJUSTE DE INVENTARIO' })
 
                 if move.location_id.usage == 'internal' and move.location_dest_id.usage == 'internal':
                     res.update({'concept_move': 'TRANFERENCIA ENTRE ALMACENES' })
@@ -176,6 +188,12 @@ class product_kardex_report(report_sxw.rml_parse):
                     res.update({'concept_move': 'COMPOSICION DE PRODUCTOS' })
                 if move.location_id.usage == 'composition' and move.location_dest_id.usage == 'internal':
                     res.update({'concept_move': 'DESCOMPOSICION DE PRODUCTOS' })
+
+                #AJUSTE DE INVENTARIO
+                if move.location_id.usage == 'internal' and move.location_dest_id.usage == 'ajuste':
+                    res.update({'concept_move': 'SALIDA POR AJUSTE DE INVENTARIO' })
+                if move.location_id.usage == 'ajuste' and move.location_dest_id.usage == 'internal':
+                    res.update({'concept_move': 'INGRESO POR AJUSTE DE INVENTARIO' })
 
                 if move.location_id.usage == 'internal' and move.location_dest_id.usage == 'internal':
                     res.update({'concept_move': 'TRANFERENCIA ENTRE ALMACENES' })

@@ -123,7 +123,7 @@
   <story>
   <pto>
   <pto_header>
-    <blockTable colWidths="106.0,90.0,90.0,208.0,70.0,63.0,54.0,75.0" style="Table4" rowHeights="0.4cm">
+    <blockTable colWidths="70.0,90.0,126.0,208.0,70.0,63.0,54.0,75.0" style="Table4" rowHeights="0.4cm">
       <tr>
         <td>
           <para style="P4">FECHA</para>
@@ -132,7 +132,7 @@
           <para style="P4">N° FACT. / BOL.</para>
         </td>
         <td>
-          <para style="P4">N° GUIA / MOV.</para>
+          <para style="P4">N° GUIA/MOV./COMP./AJUST</para>
         </td>
         <td>
           <para style="P4">CONCEPTO</para>
@@ -200,7 +200,7 @@
       <font color="white"> - </font>
     </para>
 
-    <blockTable colWidths="106.0,90.0,90.0,208.0,70.0,63.0,54.0,75.0" style="Table4" rowHeights="0.4cm">
+    <blockTable colWidths="70.0,90.0,126.0,208.0,70.0,63.0,54.0,75.0" style="Table4" rowHeights="0.4cm">
       <tr>
         <td>
           <para style="P4">FECHA</para>
@@ -209,7 +209,7 @@
           <para style="P4">N° FACT. / BOL.</para>
         </td>
         <td>
-          <para style="P4">N° GUIA / MOV.</para>
+          <para style="P4">N° GUIA/MOV./COMP./AJUST</para>
         </td>
         <td>
           <para style="P4">CONCEPTO</para>
@@ -230,7 +230,7 @@
     </blockTable>
     <section>
       <para style="P2">[[ repeatIn(get_move_details(data['form']), 'p') ]]</para>
-      <blockTable colWidths="106.0,90.0,90.0,208.0,70.0,63.0,54.0,75.0" rowHeights="0.4cm" style="Table5">
+      <blockTable colWidths="70.0,90.0,126.0,208.0,70.0,63.0,54.0,75.0" rowHeights="0.4cm" style="Table5">
         <tr>
           <td>
            <para style="P3">[[ formatLang(p['date'], date_time = True)[:10]  or removeParentNode('para') ]] </para>
@@ -259,7 +259,7 @@
         </tr>
       </blockTable>
     </section>
-    <blockTable colWidths="106.0,90.0,90.0,208.0,70.0,63.0,54.0,75.0" style="Table5" rowHeights="0.4cm">
+    <blockTable colWidths="70.0,90.0,126.0,208.0,70.0,63.0,54.0,75.0" style="Table5" rowHeights="0.4cm">
         <tr>
           <td>
            <para style="P3">
