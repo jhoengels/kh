@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_product_ajuste_gestor,stock.ajuste gestor,model_stock_ajuste,group_ajuste_stock,1,1,1,1
+access_product_ajuste_line_gestor,stock.ajuste.line gestor,model_stock_ajuste_line,group_ajuste_stock,1,1,1,1
+
