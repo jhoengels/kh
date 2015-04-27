@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<openerp>
+	<data>
+    	<!-- para impresiones cotizacion corporativo -->
+        <report
+                auto="False"
+                id="sale_cotizacion_print"
+                model="sale.cotizacion"
+                name="sale.cotizacion.print"
+                rml="sale_cotizacion/report/report_print.rml" 
+                string="Cotizacion"
+                multi="False"/>
+	</data>
+</openerp>

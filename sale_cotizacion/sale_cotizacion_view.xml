@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data> 
+
+        <record id="view_cotizacion_tree" model="ir.ui.view">
+                <field name="name">sale.cotizacion.tree</field>
+                <field name="model">sale.cotizacion</field>
+                <field name="arch" type="xml">
+                    <tree string="Cotizaciones registradas" >
+                        <field name="name" string="N° Cotizacion"/>
+                        <field name="date_order"/>
+                        <field name="partner_id"/>
+                        <field name="user_id"/>
+                        <field name="total" sum="total"/>
+                    </tree>
+                </field>
+        </record>
+
+        <record id="view_cotizacion_form" model="ir.ui.view">
+            <field name="name">sale.cotizacion.form</field>
+            <field name="model">sale.cotizacion</field>
+            <field name="arch" type="xml">
+                <form string="Sales Cotizacion" version="7.0">
+                    <header> 
+                        <!--
+                        <button name="create_sale_order" string="Crear Pedido Venta" type="object" class="oe_highlight"/>
+                        <button name="view_sale_order" string="Ver Pedido Venta" type="object" class="oe_highlight"/> -->
+                        <!--<button name="action_quotation_send" string="Enviar por Email" type="object" class="oe_highlight"/> -->
+                        <button name="print_quotation" string="Imprimir" type="object" class="oe_highlight"/> 
+                         <button type="object" name="action_order_create" string="Crear Pedido Venta"/>                   
+                    </header>
+                    <sheet>
+                        <div class="oe_right oe_button_box" name="buttons">                           
+                            <button type="object" name="action_view_order" string="Ver Pedido Venta" />
+                        </div>
+                        <div class="oe_title">
+                            <h1>
+                                <label string="Cotizacion "/>
+                                <field name="name" class="oe_inline" readonly="1"/>
+                            </h1>
+                        </div>                       
+
+                        <group>
+                            <group>
+                                <field name="partner_id" on_change="onchange_partner_id(partner_id, context)"  domain="[('customer','=',True)]" context="{'search_default_customer':1, 'show_address': 1}" options='{"always_reload": True}'/>
+                                <field name="partner_shipping_id" context="{'default_type':'delivery', 'show_address': 1}" options='{"always_reload": True}'/>
+                                <field name="partner_contact_id" context="{'default_type':'contact', 'show_address': 1}" options='{"always_reload": True}'/> 
+                                <field name="costo_flete"/>   
+                                <field name="costo_embalaje"/>
+                                               
+                            </group>
+                            <group>
+                                <field name="date_order"/>
+                                <field name="shop_id" widget="selection"/>
+                                <field name="pricelist_id" domain="[('type','=','sale')]" on_change="onchange_pricelist_id(pricelist_id,cotizacion_line)"/>
+                                <field name="currency_id"/>                                
+                                <field name="tipo_cambio"/>  
+                                <field name="fecha_expected"/>  
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Lineas Cotizadas">
+                                <field name="cotizacion_line">
+                                    <form string="Sales Cotizaciones Lines" version="7.0">
+                                               
+                                        <group>                                     
+                                            <field name="product_id" on_change="onchange_product_id(product_id, product_uom_qty, name, context)" />
+                                            <field name="descripcion_sale_id" domain="[('product_id','=',product_id)]" on_change="onchange_descripcion(descripcion_sale_id,product_id,name,context)" string="Descrip. Coorp."/>
+                                            <field name="name"/>
+                                        </group> 
+                                        <group>
+                                            <group> 
+                                                <field name="product_uom_qty"/>
+                                                <field name="price_unit"/> 
+                                            </group> 
+                                            <group>  
+                                                <field name="flete"/> 
+                                                <field name="embalaje"/> 
+                                                <field name="price_subtotal"/>
+                                            </group> 
+                                        </group>                                
+                                
+                                    </form>
+                                    <tree string="Sales Cotizaciones Lines" >
+                                        <field name="product_id" on_change="onchange_product_id(product_id, product_uom_qty, name,context)"/>
+                                        <field name="name"/>  
+                                        <field name="product_uom_qty"/>  
+                                        <field name="price_unit"/> 
+                                        <field name="flete"/> 
+                                        <field name="embalaje"/>                                     
+                                        <field name="price_subtotal"/>                              
+                                    </tree>
+                                </field>
+                                 <group class="oe_subtotal_footer oe_right" colspan="2" name="sale_total_cotizacion">
+                                    <div class="oe_subtotal_footer_separator oe_inline">
+                                        <label for="total" />
+                                        <button name="button_dummy"  string="(update)" type="object" class="oe_edit_only oe_link"/>
+                                    </div>
+                                    <field name="total" nolabel="1" class="oe_subtotal_footer_separator" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                                    <div class="oe_subtotal_footer_separator oe_inline">
+                                        <label for="total_dolar" string="Total en Dolares ($)" />
+                                    </div>
+                                    <field name="total_dolar" nolabel="1" class="oe_subtotal_footer_separator" widget='monetary'/>
+
+                                </group>
+        
+                                <div class="oe_clear"/>
+                                <field name="note" class="oe_inline" placeholder="Terminos y condiciones"/>
+                            </page>
+                            <page string="Informacion adicional">
+                                <group>
+                                    <group>
+                                        <field name="forma_pago"/>
+                                        <field name="payment_term"/>
+                                        <field name="igv"/>
+                                    </group>  
+                                    <group>  
+                                        <field name="flete"/>
+                                        <field name="embalaje"/>  
+                                        <field name="tipo_entrega"/> 
+                                        <field name="user_id"/> 
+                                    </group>                                       
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                  <!--
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                  -->
+                </form>
+            </field>
+        </record>
+
+
+        <record id="action_cotizaciones" model="ir.actions.act_window">
+                <field name="name">Cotizaciones</field>
+                <field name="type">ir.actions.act_window</field>
+                <field name="res_model">sale.cotizacion</field>
+                <field name="view_type">form</field>
+                <field name="view_id" ref="view_cotizacion_tree"/>
+                <field name="view_mode">tree,form</field>
+                <field name="help" type="html">
+                  <p class="oe_view_nocontent_create">
+                    Click en Crear para crear una nueva cotizacion.
+                  </p>
+                </field>
+        </record>
+
+        <menuitem id="menu_sale_cotizaciones" parent="base.menu_sales" sequence="2" name="Cotizaciones Corporativas"  action="action_cotizaciones"/>
+
+        <!-- Añade el campo sequence de cotizacion a la  tienda -->
+        <record model="ir.ui.view" id="view_sale_shop_cotizacion_form">
+            <field name="name">sale.shop.cotizacion.form</field>
+            <field name="model">sale.shop</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="sale.view_shop_form"/>
+            <field name="arch" type="xml">
+                <field name="pricelist_id" position="after">
+                    <field name="sequence_cotiz_id"/>
+                </field>
+            </field>
+        </record>
+
+        <!-- Añade el campo id de cotizacion y precio_original a la orden de venta -->
+        <record id="view_order_form_cotizacion_inherit" model="ir.ui.view">
+            <field name="name">sale.order.form.sale.cotizacion</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <field name="origin" position="after">
+                    <field name="cotizacion_id" string='Cotizacion'/>
+                </field>
+
+                <xpath expr="//form//field[@name='price_unit']" position="before">
+                    <field name="price_original" invisible="1" groups='sale_cotizacion.group_price_original'/>
+                </xpath>
+
+                <xpath expr="//tree//field[@name='price_unit']" position="before">
+                    <field name="price_original"  groups='sale_cotizacion.group_price_original'/>
+                </xpath>
+
+           </field>
+        </record>
+
+
+  </data>
+</openerp>
+
