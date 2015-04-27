@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+<!-- res.users -->
+        <record model="ir.ui.view" id="res_users_sale_shop_tree_view">
+            <field name="name">res_users.sale.shop.tree</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="base.view_users_tree"/>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <field name='lang' position="after">
+                    <field name="shop_id"/>
+                </field>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_res_partner_medidavista_form">
+            <field name='name'>res_users.sale.shop.form</field>
+            <field name='model'>res.users</field>
+            <field name="inherit_id" ref="base.view_users_form"/>
+            <field name='type'>form</field>
+            <field name='arch' type='xml'>
+            	<field name="menu_id" position="after">
+                    <field name="shop_id"/>
+                </field>            	
+                <notebook  position="inside">
+					<page string="Tiendas">
+		                    <field name="shop_ids"  widget="many2many_tags" nolabel="1"/>
+					</page>
+                </notebook>
+            </field>
+        </record>
+    </data>
+</openerp>
+
+
+
+
+
+
+

@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+        <!-- INSERTANDO CAUSAS -->
+        <record model="stock.move.causes" id="1">
+            <field name="name">TRANSFERENCIAS</field>
+            <field name="active">True</field>
+        </record>
+        <record model="stock.move.causes" id="2">
+            <field name="name">DESPACHO CLIENTES</field>
+            <field name="active">True</field>
+        </record>
+        
+        <record model="stock.move.causes" id="3">
+            <field name="name">DESPACHO TERCEROS</field>
+            <field name="active">True</field>
+        </record>
+
+        <record model="stock.move.causes" id="4">
+            <field name="name">DESPACHO OTROS</field>
+            <field name="active">True</field>
+        </record>
+
+        <record model="stock.move.causes" id="5">
+            <field name="name">DESPACHO ADMINISTRATIVO</field>
+            <field name="active">True</field>
+        </record>
+
+        <record model="stock.move.causes" id="6">
+            <field name="name">RECEPCION</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- INSERTANDO SUB CAUSAS -->
+
+        <record id="1" model="stock.move.subcauses">
+            <field name="name">ALMACEN - TIENDA</field>
+            <field name="active">True</field>
+            <field name="cause_id" ref="1"/>
+        </record>
+        <record id="2" model="stock.move.subcauses">
+            <field name="name">ALMACEN - TALLER</field>
+            <field name="active">True</field>
+            <field name="cause_id" ref="1"/>
+        </record>
+        <record id="3" model="stock.move.subcauses">
+            <field name="name">ALMACEN - PRODUCCION</field>
+            <field name="active">True</field>
+            <field name="cause_id" ref="1"/>
+        </record>
+
+        <record id="4" model="stock.move.subcauses">
+            <field name="name">DESPACHO A DOMICILIO</field>
+            <field name="active">True</field>
+            <field name="cause_id" ref="2"/>
+        </record>
+        <record id="5" model="stock.move.subcauses">
+            <field name="name">DESPACHO AGENCIA</field>
+            <field name="active">True</field>
+            <field name="cause_id" ref="2"/>
+        </record>
+        <record id="6" model="stock.move.subcauses">
+            <field name="name">DESPACHO CLIENTE RECOGE</field>
+            <field name="active">True</field>
+            <field name="cause_id" ref="2"/>
+        </record>
+        <record id="7" model="stock.move.subcauses">
+            <field name="name">DESPACHO RECOGO</field>
+            <field name="active">True</field>
+            <field name="cause_id" ref="2"/>
+        </record>
+        <record id="8" model="stock.move.subcauses">
+            <field name="name">DESPACHO A CAMBIO</field>
+            <field name="active">True</field>
+            <field name="cause_id" ref="2"/>
+        </record>
+
+        <record id="9" model="stock.move.subcauses">
+            <field name="name">FOTOGRAFIA</field>
+            <field name="active">True</field>
+            <field name="cause_id" ref="3"/>
+        </record>
+        <record id="10" model="stock.move.subcauses">
+            <field name="name">SERVICIO TECNICO</field>
+            <field name="active">True</field>
+            <field name="cause_id" ref="3"/>
+        </record>
+        <record id="12" model="stock.move.subcauses">
+            <field name="name">PRESTAMO</field>
+            <field name="active">True</field>
+            <field name="cause_id" ref="3"/>
+        </record>
+        <record id="13" model="stock.move.subcauses">
+            <field name="name">MUESTRA</field>
+            <field name="active">True</field>
+            <field name="cause_id" ref="3"/>
+        </record>
+
+
+        <record id="14" model="stock.move.subcauses">
+            <field name="name">DONACION</field>
+            <field name="active">True</field>
+            <field name="cause_id" ref="4"/>
+        </record>
+        <record id="15" model="stock.move.subcauses">
+            <field name="name">OBSEQUIOS</field>
+            <field name="active">True</field>
+            <field name="cause_id" ref="4"/>
+        </record>
+        <record id="16" model="stock.move.subcauses">
+            <field name="name">TRASLADO DE ACTIVOS</field>
+            <field name="active">True</field>
+            <field name="cause_id" ref="5"/>
+        </record>
+        <record id="17" model="stock.move.subcauses">
+            <field name="name">MERCADERIA DE CLIENTE</field>
+            <field name="active">True</field>
+            <field name="cause_id" ref="5"/>
+        </record>
+        <record id="18" model="stock.move.subcauses">
+            <field name="name">INSUMOS</field>
+            <field name="active">True</field>
+            <field name="cause_id" ref="5"/>
+        </record>
+        <record id="19" model="stock.move.subcauses">
+            <field name="name">TRASLADO OTROS</field>
+            <field name="active">True</field>
+            <field name="cause_id" ref="5"/>
+        </record>
+
+        <record id="20" model="stock.move.subcauses">
+            <field name="name">PROVEEDORES - PROPIA NACIONAL</field>
+            <field name="active">True</field>
+            <field name="cause_id" ref="6"/>
+        </record>
+        <record id="21" model="stock.move.subcauses">
+            <field name="name">PROVEEDORES - PROPIA IMPORTADO</field>
+            <field name="active">True</field>
+            <field name="cause_id" ref="6"/>
+        </record>
+        <record id="22" model="stock.move.subcauses">
+            <field name="name">PROVEEDORES - CONSGINACION</field>
+            <field name="active">True</field>
+            <field name="cause_id" ref="6"/>
+        </record>
+        <record id="23" model="stock.move.subcauses">
+            <field name="name">DEVOLUCION CONSIGNACION</field>
+            <field name="active">True</field>
+            <field name="cause_id" ref="6"/>
+        </record>
+        <record id="24" model="stock.move.subcauses">
+            <field name="name">DEVOLUCION PROPIA NACIONAL</field>
+            <field name="active">True</field>
+            <field name="cause_id" ref="6"/>
+        </record>
+
+    </data>
+</openerp>

@@ -1,0 +1,17 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_product_composition_all,product.composition all,model_product_composition,,1,0,0,0
+access_product_composition_user,product.composition user,model_product_composition,stock.group_stock_user,1,1,1,0
+access_product_composition_gestor,product.composition gestor,model_product_composition,stock.group_stock_manager,1,1,1,1
+
+access_product_composition_line_all,product.composition.line all,model_product_composition_line,,1,0,0,0
+access_product_composition_line_user,product.composition.line user,model_product_composition_line,stock.group_stock_user,1,1,1,0
+access_product_composition_line_gestor,product.composition.line gestor,model_product_composition_line,stock.group_stock_manager,1,1,1,1
+
+access_product_make_all,product.make all,model_product_make,,1,0,0,0
+access_product_make_user,product.make user,model_product_make,stock.group_stock_user,1,1,1,0
+access_product_make_gestor,product.make gestor,model_product_make,stock.group_stock_manager,1,1,1,1
+
+access_product_make_line_all,product.make.line all,model_product_make_line,,1,0,0,0
+access_product_make_line_user,product.make.line user,model_product_make_line,stock.group_stock_user,1,1,1,0
+access_product_make_line_gestor,product.make.line gestor,model_product_make_line,stock.group_stock_manager,1,1,1,1
+

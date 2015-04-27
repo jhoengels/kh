@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+	<data>
+
+        <record model="ir.ui.view" id="view_sunat_detraccion_adquiriente_tree">
+            <field name="name">sunat.detraccion.adquiriente.tree</field>
+            <field name="model">sunat.detraccion.adquiriente</field>
+            <field name="arch" type="xml">
+                <tree string="Listar de registro">
+                   <field name="name"/>
+                   <field name="ruc_adquiriente"/>
+                   <field name="n_adquiriente"/>
+                   <field name="anio" string="Año" />
+                   <field name="n_correlativo"/>
+                   <field name="n_lote"/>
+                   <field name="i_total"/>
+                   <field name="fecha"/>
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="view_sunat_detraccion_adquiriente_form">
+            <field name="name">sunat.detraccion.adquiriente.form</field>
+            <field name="model">sunat.detraccion.adquiriente</field>
+            <field name="arch" type="xml">
+               <form string="Nuevo registro" version="7.0">
+                    <header>
+                        <button name="button_done" string="Confirmar pago detraccion" groups="" states="draft" class="oe_highlight"/> 
+                        <button name="button_cancel" string="Anular" groups="" states="draft" class="oe_highlight"/> 
+                        <button name="button_cancel" string="Anular" groups="" states="done"/>
+                        <field name="state"  widget="statusbar" statusbar_visible="draft,done,cancel"
+                        statusbar_colors="{&quot;waiting_date&quot;:&quot;blue&quot;}"/>
+                    </header> 
+                    <sheet>
+                        <h2> 
+                          <label string="Nombre"/>
+                          <field name="name" class="oe_inline" readonly="1"/>
+                        </h2>
+                        <group>
+                            <group>
+                                <field name="ruc_adquiriente" on_change="onchange_ruc(ruc_adquiriente,context)"/>
+                                <field name="n_adquiriente" on_change="onchange_n_adquiriente(n_adquiriente,context)"/>
+                                <field name="fecha" readonly="1"/>
+                            </group>
+                            <group>
+                                <field name="anio" string="Año" placeholder="Por ejemplo: 2015" on_change="onchange_n_lote(anio,n_correlativo,context)"/>
+                                <field name="n_correlativo" placeholder="Por ejemplo: 0001" help=" De 4 digitos, completar con ceros adelante." on_change="onchange_n_lote(anio,n_correlativo,context)"/>
+                                <field name="n_lote" placeholder="Por ejemplo aannnn: 150001"/>
+                                <field name="i_total" widget="monetary" options="{'currency_field': 'currency_id'}" />
+                            </group>                            
+                        </group>
+                        <notebook>
+                           <page string="Registro de abonos(proveedores)">                            
+                                <field name="proveedores_ids" nolabel="1"/>
+                           </page>
+                        </notebook> 
+                      </sheet>      
+                </form>
+            </field> 
+        </record>
+
+        <record model="ir.ui.view" id="view_sunat_detraccion_adquiriente_proveedor_tree">
+            <field name="name">sunat.detraccion.adquiriente.proveedor.tree</field>
+            <field name="model">sunat.detraccion.adquiriente.proveedor</field>
+            <field name="arch" type="xml">
+                <tree string="Listar de registro">
+                   <field name="ruc_proveedor"/>
+                   <field name="name"/>
+                   <field name="p_tributario"/>
+                   <field name="n_cuenta"/>
+                   <field name="importe"  widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_sunat_detraccion_adquiriente_proveedor_form">
+            <field name="name">sunat.detraccion.adquiriente.proveedor.form</field>
+            <field name="model">sunat.detraccion.adquiriente.proveedor</field>
+            <field name="arch" type="xml">
+               <form string="Nuevo registro" version="7.0">
+                    <sheet>
+                        <group>
+                            <group>                                
+                                <field name='tipo_doc' readonly='1'/> 
+                                <field name="ruc_proveedor" on_change="onchange_ruc(ruc_proveedor,context)"/>
+                                <field name="name" on_change="onchange_name(name,context)"/>
+                                <field name="n_cuenta" placeholder="Por ejemplo: 00000000001"/>
+                                <field name="p_tributario" placeholder="Por ejemplo aaaamm: 201512"/>
+                                <field name="importe"/>                                
+                            </group>
+                            <group>
+                                <field name="tipo_operacion"/>
+                                <field name="tipo_bien_servicio"/>
+                                <field name="tipo_comprobante"/>
+                                <field name="s_comprobante" placeholder="Por ejemplo: 0005"/>
+                                <field name="n_comprobante" placeholder="Por ejemplo: 00000040"/>
+                            </group> 
+                        </group>
+                      </sheet>      
+                </form>
+            </field> 
+        </record>
+
+        <record model="ir.actions.act_window" id="action_sunat_detraccion_adquiriente_form">
+            <field name="name">sunat.detraccion.adquiriente</field>
+            <field name="res_model">sunat.detraccion.adquiriente</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <menuitem name="Detracciones" id="menu_sunat_detraccion_adquiriente_form" action="action_sunat_detraccion_adquiriente_form" />
+
+          <menuitem name="Detracciones" id="menu_sunat_detraccion_adquiriente_view" parent="menu_sunat_detraccion_adquiriente_form" sequence="1"/>
+
+          <menuitem name="Adquiriente" id="menu_sunat_detraccion_adquiriente_tree" parent="menu_sunat_detraccion_adquiriente_view" action="action_sunat_detraccion_adquiriente_form" sequence="1"/>
+
+    	
+
+
+        <!-- REPORTE A TXT-->
+        <!--
+        <report auto="False" id="report_detraccion_adquiriente"
+            model="sunat.detraccion.adquiriente" 
+            name="sunat_adquiriente"
+            rml="sunat_detracciones/report/detraccion_txt.rml" 
+            string="Exportar a TXT"
+            usage="default"/>
+             -->
+    </data>
+</openerp>

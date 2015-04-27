@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <report
+            auto="False"
+            id="pos_order_print"
+            model="pos.order"
+            groups="pos_extend.group_pos_caja"
+            name="pos.order.print.ticket"
+            rml="pos_extend/report/pos_order_print.rml"
+            string="Imprimir ticket"
+            usage="default"
+             />
+   </data>
+</openerp>

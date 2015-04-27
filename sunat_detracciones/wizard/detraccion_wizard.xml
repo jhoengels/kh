@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_sunat_adquiriente_proveedor_wizard" model="ir.ui.view">
+            <field name="name">Exportar detraccion</field>
+            <field name="model">sunat.adquiriente.proveedor.wizard</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Exportar detraccion" version="7.0">
+                    <separator colspan="4" string="Exportar detraccion"/>
+                    <group col="2"  colspan="2">
+                        <field name="detraccion_ids" required="True"/>
+                    </group>
+                    <footer>
+                        <!--
+                        <button icon="gtk-print" name="print_report_libro_diario" string="Print *.pdf" type="object" default_focus="1" class="oe_highlight"/>
+                        or -->
+                        <button icon="gtk-print" name="print_txt" string="Print *.txt" type="object" class="oe_highlight"/>
+                        or
+                        <button class="oe_link" special="cancel" string="Cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action -->
+        <record model="ir.actions.act_window" id="action_sunat_adquiriente_proveedor_wizard">
+            <field name="name">Sunat Detraccion Adquiriente</field>
+            <field name="key2">client_print_multi</field>
+            <field name="res_model">sunat.adquiriente.proveedor.wizard</field>
+            <field name="src_model">sunat.detraccion.adquiriente</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <!-- Menu -->
+        <menuitem name="Exportar" id="menu_sunat_adquiriente_proveedor_wizard" parent="menu_sunat_detraccion_adquiriente_view" action="action_sunat_adquiriente_proveedor_wizard" sequence="4" />
+
+    </data>
+</openerp>

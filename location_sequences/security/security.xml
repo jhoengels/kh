@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+<!-- Picking x Ubicaciones  -->
+		<record id="stock_picking_ubic_rule" model="ir.rule">
+            <field name="name">PICKING x UBICACIONES</field>
+            <field model="ir.model" name="model_id" ref="model_stock_picking"/>
+            <field eval="True" name="global"/>
+            <field name="domain_force">['|','|','|',('move_lines.location_id','=',False),('move_lines.location_id','in',[x.id for x in user.location_ids]),('move_lines.location_dest_id','in',[x.id for x in user.location_ids]),('move_lines','=',False)]</field>
+            <field eval="0" name="perm_unlink"/>
+            <field eval="0" name="perm_write"/>
+            <field eval="1" name="perm_read"/>
+            <field eval="0" name="perm_create"/>
+        </record>
+<!-- movimientos x Ubicaciones  -->
+		<record id="stock_move_ubic_rule" model="ir.rule">
+            <field name="name">MOVIMIENTOS x UBICACIONES</field>
+            <field model="ir.model" name="model_id" ref="model_stock_move"/>
+            <field eval="True" name="global"/>
+            <field name="domain_force">['|',('location_id','in',[x.id for x in user.location_ids]),('location_dest_id','in',[x.id for x in user.location_ids])]</field>
+            <field eval="0" name="perm_unlink"/>
+            <field eval="0" name="perm_write"/>
+            <field eval="1" name="perm_read"/>
+            <field eval="0" name="perm_create"/>
+        </record>
+
+<!-- Visualizar ubicaciones permitidas
+
+        <record id="stock_view_ubic_rule" model="ir.rule">
+            <field name="name">VISUALIZAR UBICACIONES</field>
+            <field model="ir.model" name="model_id" ref="model_stock_location"/>
+            <field eval="False" name="global"/>
+            <field name="domain_force">['|',('user_ids','=',False),('id','in',[x.id for x in user.location_ids])]</field>
+        </record>
+-->
+        
+
+    </data>
+</openerp>

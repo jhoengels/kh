@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<openerp>
+<data noupdate="1">
+    <!-- Para que puedan valorizar el producto -->
+    <record id="group_user_valorizar" model="res.groups">
+        <field name="name">VALORIZAR</field>
+    </record>
+</data>
+</openerp>

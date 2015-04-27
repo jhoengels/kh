@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data> 
+        <!-- Añade el campos al pedido de venta del TPV-->
+		<record model="ir.ui.view" id="view_pos_extend_form_inherited">
+	        <field name="name">pos.order.extend.form.inherited</field>
+	        <field name="model">pos.order</field>
+	        <field name="inherit_id" ref="point_of_sale.view_pos_pos_form"/>
+	        <field name="arch" type="xml">
+
+                <xpath expr="//button[@name='%(point_of_sale.action_pos_payment)d']" position="replace"/>
+                <xpath expr="//button[@name='action_invoice']" position="replace"/>
+
+                <xpath expr="//button[@name='%(point_of_sale.action_report_pos_receipt)d']" position="replace">
+                    <button name="pos_print_report" string="imprimir Ticket" type="object" states="paid,done,invoiced" groups="pos_extend.group_pos_caja" context="{'pos_session_id' : session_id}" icon="STOCK_PRINT"/>
+
+                    <button name="cancel_payment" states="paid,done,invoiced" string="Anular pagos" icon="gtk-cancel" groups="pos_extend.group_pos_caja" type="object"/>
+                    <button name="cancel_order" states="paid,done,invoiced" string="Anular Ticket" icon="gtk-cancel" groups="pos_extend.group_pos_caja" type="object"/>
+                </xpath>
+
+                <!--<xpath expr="//button[@name='refund']" position="after"> -->
+                <xpath expr="//button[@name='refund']" position="replace">
+                    <button name="%(point_of_sale.action_pos_payment)d" string="Payment" class="oe_highlight" type="action" states="draft" context="{'pos_session_id' : session_id}" groups="pos_extend.group_pos_caja"/>
+                </xpath>
+
+                <field name="partner_id" position="replace">
+                    <field name="partner_id" on_change="onchange_partner_id(partner_id, context)" context="{'search_default_customer':1, 'show_address': 1}" options="{'always_reload': True,'limit': 10, 'create': false, 'create_edit': True}" attrs="{'readonly': [('state','!=','draft')]}"  filter_domain="[('ref','ilike',self)]"  domain="[('customer','=',1)]" />
+
+                </field>
+                <field name="session_id" position="after">
+                     <field name="es_factura" string="Facturada?" attrs="{'readonly': [('state','!=','draft')]}" />
+                </field>
+                <field name="user_id" position="replace"/>
+                <field name="partner_id" position="after">
+                    <field name="user_id"  attrs="{'readonly': [('state','!=','draft')]}"/>
+                </field>                
+
+                <field name="pricelist_id" position="replace"/>
+                <field name="user_id" position="after">
+                    <field name="doc_number" string="RUC/DNI" on_change="onchange_ruc_dni(doc_number, context)"  attrs="{'readonly': [('state','!=','draft')]}"/>
+                    <field name="almacendespacho_id" domain="[('bajo_pedido','=',1)]"  attrs="{'readonly': [('state','!=','draft')]}" />
+                    <field name="pricelist_id" groups="product.group_sale_pricelist" domain="[('type','=','sale')]"/>
+                </field>
+
+                <field name="pricelist_id" position="after">
+                    <field name="fecha_expected"  attrs="{'readonly': [('state','!=','draft')]}"/>
+                </field>
+
+                <field name="fecha_expected" position="after">
+                    <field name="partner_shipping_id" context="{'default_type':'delivery' ,'show_address': 1}" options="{'always_reload': True,'limit': 10, 'create': false, 'create_edit': false}"  attrs="{'readonly': [('state','!=','draft')]}"/>
+                </field>
+
+                <field name="pos_reference" position="replace"/>
+                <field name="partner_shipping_id" position="after">
+                    <label for="pos_reference" string="Numero Ticket"/>
+                    <h3>                        
+                        <field name="pos_reference"  attrs="{'readonly': [('state','!=','draft')]}" class="oe_inline"/>
+                    </h3>
+                </field>
+                <field name="picking_id" position="replace">
+                    <field name="picking_id" string="Guia de Salida"/>
+                </field>
+                <field name="note" position="replace">
+                    <field name="note" attrs="{'readonly': [('state','!=','draft')]}"/>
+                </field>
+
+                <!-- PARA PEDIDDOS DE ALMACEN-->
+                <field name="product_id" position="replace">
+                    <field name="product_id" on_change="onchange_product_id(parent.pricelist_id,product_id,qty, parent.partner_id, parent.almacendespacho_id, parent.session_id)" options="{'limit': 10, 'create': false, 'create_edit': false}"/>
+                </field>
+                <field name="qty" position="replace">
+                   <field name="qty" on_change="onchange_qty(product_id, discount, qty, price_unit, parent.almacendespacho_id, context)"/>
+                </field>
+
+                <field name="price_unit" position="replace">
+                    <field name="price_unit" on_change="onchange_qty(product_id, discount, qty, price_unit, parent.almacendespacho_id, context)"/>
+                </field>
+
+                <field name="discount" position="replace" >
+                    <field name="discount"  on_change="onchange_qty(product_id, discount, qty, price_unit, parent.almacendespacho_id, context)"/>
+                </field>
+                <!-- FIN -->
+	        </field>
+    	</record>
+
+        <record model="ir.ui.view" id="view_pos_extend_tree_inherited">
+            <field name="name">pos.order.extend.tree.inherited</field>
+            <field name="model">pos.order</field>
+            <field name="inherit_id" ref="point_of_sale.view_pos_order_tree"/>
+            <field name="arch" type="xml">
+                <field name="invoice_id" position="replace"/> 
+                <field name="pos_reference" position="replace">
+                    <field name="pos_reference" string="Numero Ticket"/>
+                </field>
+                <field name="name" position="replace">
+                    <field name="name" string="Pedido Venta"/>
+                </field>
+            </field>
+        </record>
+
+        <!--
+        <menuitem parent="point_of_sale.menu_point_of_sale" action="sale.action_orders" id="menu_sales_normal" sequence="10" name="Ventas normales"/> -->
+
+<!-- Añade el campo bajo_pedido a una ubicacion-->
+        <record model="ir.ui.view" id="view_stock_location_bajopedido_form_inherited">
+            <field name="name">sale.shop.res_users.form</field>
+            <field name="model">stock.location</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="stock.view_location_form"/>
+            <field name="arch" type="xml">
+                <field name="scrap_location" position="before">
+                     <field name="bajo_pedido"/>
+                </field>
+            </field>
+        </record>
+
+
+<!-- Añade el campo sequencetpv al formulario tienda-->
+        <record model="ir.ui.view" id="view_sale_shop_sequencepos_form">
+            <field name="name">sale.shop.sequencepos.form</field>
+            <field name="model">sale.shop</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="sale_multishop.view_sale_shop_res_users_form"/>
+            <field name="arch" type="xml">
+                <field name="sequence_id" position="after">
+                     <field name="sequencepos_id"/>
+                </field>
+            </field>
+        </record>
+
+  </data>
+</openerp>

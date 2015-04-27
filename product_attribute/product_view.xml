@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+
+        <record id="product_product_attribute_form_inherit" model="ir.ui.view">
+            <field name="name">product.product.attribute.view.form</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_normal_form_view"/>
+            <field eval="8" name="priority"/>
+            <field name="arch" type="xml">
+               	<field name="type" position="after">
+			        <field name="procedencia" />
+		        </field>
+            </field>
+        </record>
+
+<!--
+        <record id="product_product_tree_extern_code_inherit" model="ir.ui.view">
+            <field name="name">product.product.extern.code.view.tree</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_product_tree_view"/>
+            <field eval="8" name="priority"/>
+            <field name="arch" type="xml">
+                <field name="default_code" position="before">
+                        <field name="code_extern" />
+                </field>
+            </field>
+        </record>
+-->
+
+        <record id="product_search_attribute_form_view_inherit" model="ir.ui.view">
+            <field name="name">product.product.attribute.view.search</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_search_form_view"/>
+            <field eval="8" name="priority"/>
+            <field name="arch" type="xml">
+                <field  name="name" position="replace">
+                   <field name="name" string="Product" filter_domain="['|','|',('name','ilike',self),('default_code','ilike',self),('procedencia','ilike',self)]"/>
+                </field>
+        </field>
+        </record>
+
+    </data>
+</openerp>

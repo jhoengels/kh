@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<openerp>
+	<data>
+    		        <!-- para impresiones corporativo -->
+        <report
+                auto="False"
+                id="account_nc_a4"
+                model="account.invoice"
+                name="account.nc.print.a4"
+                rml="account_nc_a4/report/account_nc_a4.rml" 
+                string="Nota Credito A4"
+                attachment=""
+                attachment_use="0"
+                multi="False"/>
+	</data>
+</openerp>

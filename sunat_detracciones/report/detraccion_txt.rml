@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<document filename="index.txt">
+    <template title="Test" author="huberS">
+        <pageTemplate id="main"></pageTemplate>
+    </template>
+    <story>
+    <section> [[ repeatIn(get_detalle_cabecera(data['form_cb']), 'd') ]] [[d]] </section>
+    <section> [[ repeatIn(get_detalle_cuerpo(data['form_cp']), 'm') ]] [[m]] </section>
+    </story>
+</document>

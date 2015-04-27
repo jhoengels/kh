@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<openerp>
+<data noupdate="1">
+    <record id="group_noforce_user" model="res.groups">
+        <field name="name">Forzar disponibilidad</field>
+    </record>
+</data>
+</openerp>

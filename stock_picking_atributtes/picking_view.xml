@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+	<data>
+
+		<record id="view_stock_pickin_in_fact_guia_form" model="ir.ui.view">
+            <field name="name">stock.picking.in.fact.guia.form</field>
+            <field name="model">stock.picking.in</field>
+            <field name="inherit_id" ref="stock.view_picking_in_form"/>
+            <field name="arch" type="xml">
+                <field name="partner_id" position="after">
+                		<field name="fact_supplier"/>
+                        <field name="guia_supplier"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="view_stock_pickin_out_peso_form" model="ir.ui.view">
+            <field name="name">stock.picking.out.peso.form</field>
+            <field name="model">stock.picking.out</field>
+            <field name="inherit_id" ref="stock.view_picking_out_form"/>
+            <field name="arch" type="xml">
+                <field name="origin" position="after">
+                        <field name="bultos"/>
+                        <field name="peso"/>
+                </field>
+            </field>
+        </record>
+
+	</data>
+</openerp>

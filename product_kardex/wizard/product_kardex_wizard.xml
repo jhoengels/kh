@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    	 <!-- id nombre wozard no  debe de termina en _form-->
+        <record id="view_kardex_producto" model="ir.ui.view">
+            <field name="name">Formulario de Kardex de producto</field>
+            <field name="model">product.kardex.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Imprime  kardex producto" version="7.0">
+                    <group col="4" string="Seleccione un producto">
+                    	<field name="location_ids" domain="[('usage', '=', 'internal'),('chained_location_type','=','none')]" style="width: 70%%" options='{"no_open": True}'/>
+                    	<newline/>
+                        <field name="product_ids" domain="['|',('type', '=', 'product'),('type', '=', 'consu')]"  required="True" style="width: 70%%" options='{"no_open": True}'/>
+                    </group>
+                    <group col="4">
+                        <field name="fecha_desde" required='True' />
+                        <field name="fecha_hasta" required='True' />
+                    </group>
+                    
+                    <footer>
+                    <button name="print_report" type="object" string="Imprimir Pdf" class="oe_highlight"/>
+                        or
+                    <button name="print_report_cal" type="object" string="Imprimir hoja calculo" class="oe_highlight" context="{'xls_export':1}"/>
+                        or
+                    <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+               </form>
+            </field>
+        </record>
+
+        <record id="action_view_kardex_producto" model="ir.actions.act_window">
+            <field name="name">Kardex de producto</field>
+            <field name="type">ir.actions.act_window</field> 
+            <field name="res_model">product.kardex.wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_kardex_producto"/>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem
+                icon="STOCK_PRINT"
+                name="Kardex de producto"
+                parent="stock.menu_stock_product" 
+                action="action_view_kardex_producto"
+                id="menu_action_kardex_producto_wizard"
+        />
+
+<!--
+        <record id="product_by_location_tree_inherit" model="ir.ui.view">
+            <field name="name">product.location.disponible.view.tree</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_product_tree_view"/>
+            <field eval="8" name="priority"/>
+            <field name="arch" type="xml">
+                <field name="state" position="after">
+                    <button name="action_view_kardex_producto" string="Kardex" type="object" icon="gtk-go-forward" help="kardex de producto"/>
+                </field>
+            </field>
+        </record> -->
+
+    </data>
+</openerp>

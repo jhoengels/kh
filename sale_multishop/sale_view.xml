@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+<!-- res.users -->
+        <record model="ir.ui.view" id="view_sale_shop_res_users_form">
+            <field name="name">sale.shop.res_users.form</field>
+            <field name="model">sale.shop</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="sale.view_shop_form"/>
+            <field name="arch" type="xml">
+                <field name="pricelist_id" position="after">
+                    <field name="journal_id" domain="[('type', '=', 'sale')]"/>
+                    <field name="sequence_id"/>
+                </field>
+                <!-- <xpath expr="//group[@string='Sale Conditions']" position="inside"> --> 
+                <xpath expr="//group[@name='shop']" position="inside">
+                    <group>
+                        <field name="shop_address" colspan="6" />
+                        <field name="state_id" colspan="6" />  
+                        <field name="shop_telef" colspan="6" />                
+                        <separator string="Usuarios" />
+                        <field name="user_ids" nolabel="1" colspan="6" widget="many2many_tags" />
+                        <separator string="Medios de pago" />
+                        <field name="journal_ids" nolabel="1" colspan="6" widget="many2many_tags" />
+                    </group>
+                </xpath>
+
+            </field>
+        </record>
+
+       <record model="ir.ui.view" id="view_sale_order_filter_multishop" >
+            <field name="name">sales.order.filter.multishop</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_sales_order_filter"/>
+            <field name="arch" type="xml">
+                <field name='partner_id' position="after">
+                    <field name="shop_id" widget="selection"/>
+                </field>
+            </field>
+        </record>
+
+       <record model="ir.ui.view" id="view_sale_order_multishop_tree" >
+            <field name="name">sales.order.tree.multishop</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_tree"/>
+            <field name="arch" type="xml">
+                <field name="partner_id" position="after">
+                    <field name="shop_id"/>
+                </field>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_shop_journal_account_form">
+            <field name='name'>shop.journal.account.form</field>
+            <field name='model'>account.journal</field>
+            <field name="inherit_id" ref="account.view_account_journal_form"/>
+            <field name='type'>form</field>
+            <field name='arch' type='xml'>
+                <field name="sequence_id" position="after">
+                    <separator string="Tiendas" colspan="4"/>
+                    <field name="shop_ids" nolabel="1"  widget="many2many_tags" />
+                </field>                
+            </field>
+        </record>
+
+    </data>
+</openerp>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="view_picking_in_landing_costs_form">
+            <field name="name">stock.picking.in.landing.costs.form</field>
+            <field name="model">stock.picking.in</field>
+            <field name="inherit_id" ref="stock.view_picking_in_form"/>
+            <field name="arch" type="xml">               
+                <page string="Additional Info" position="after" >
+                    <page string="Landing Costs" group="group_user_valorizar">                        
+                        <button name="valorizar" string="Valorizar" type="object" class="oe_highlight" attrs="{'invisible': ['|',('valorizado','=', True),('state','!=','done'),]}"/>
+                        <button name="create_invoice_landcost" string="Crear Facturas" type="object" class="oe_highlight" attrs="{'invisible': ['|',('facturado','=', True),('state','!=','done'),]}"/>
+                        <group colspan="1" col="6">                            
+                            <field name="valorizado"  readonly='1'  />
+                            <field name="facturado"  readonly='1'  />
+                        </group>
+	                    <field name="landing_costs_line_ids" colspan="4" nolabel="1"  widget="one2many_list"/>
+    	            </page>
+                </page>
+            </field>
+        </record>
+
+        <!-- Oculta el numero de Pedido de compra en el picking de ingreso-->
+        <record model="ir.ui.view" id="view_picking_in_purchase_price_costs_form">
+            <field name="name">stock.picking.in.puchase.price.cost.form</field>
+            <field name="model">stock.picking.in</field>
+            <field name="inherit_id" ref="purchase.stock_picking_in_inherit_purchase"/>
+            <field name="arch" type="xml">               
+                 <field name="purchase_id" position="attributes">
+                         <attribute name="invisible">True</attribute>
+                </field> 
+            </field>
+        </record>
+
+        <!-- Muestra en la vista lista si la guia de ingreso fue valorizado-->
+        <record model="ir.ui.view" id="view_picking_in_valorizado_tree">
+            <field name="name">stock.picking.in.valorizado.tree</field>
+            <field name="model">stock.picking.in</field>
+            <field name="inherit_id" ref="stock.view_picking_in_tree"/>
+            <field name="arch" type="xml">               
+                 <field name="state" position="before">
+                         <field name="valorizado"/>
+                </field>
+            </field>
+        </record>
+
+        
+        <record model="ir.ui.view" id="view_move_picking_landing_costs_form">
+            <field name="name">stock.move.landing.cost.form.view</field>
+            <field name="model">stock.move</field>
+            <field name="inherit_id" ref="purchase.stock_move_purchase"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form[@string='Stock Moves']/sheet" position="inside">
+                    <group string="Landing Costs">
+                        <field name="landing_costs_line_ids" colspan="4" nolabel="1"  widget="one2many_list" class="oe_inline"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>        
+    </data>
+</openerp>
+

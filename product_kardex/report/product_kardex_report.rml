@@ -1,0 +1,305 @@
+<?xml version="1.0"?>
+<document filename="test.pdf">
+  <template pageSize="(842.0,595.0)" title="Test" author="Martin Simon" allowSplitting="20">
+    <pageTemplate id="first">
+      <frame id="first" x1="42.0" y1="42.0" width="758" height="511"/>
+    </pageTemplate>
+  </template>
+  <stylesheet>
+    <blockTableStyle id="Standard_Outline">
+      <blockAlignment value="LEFT"/>
+      <blockValign value="TOP"/>
+    </blockTableStyle>
+
+    <blockTableStyle id="Table1">
+      <blockAlignment value="LEFT"/>      
+      <blockValign value="TOP"/>
+      <!--
+      <lineStyle kind="LINEBEFORE" colorName="#000000" start="0,0" stop="0,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#000000" start="0,0" stop="0,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#000000" start="0,-1" stop="0,-1"/>
+      <lineStyle kind="LINEBEFORE" colorName="#000000" start="1,0" stop="1,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#000000" start="1,0" stop="1,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#000000" start="1,-1" stop="1,-1"/>
+      <lineStyle kind="LINEBEFORE" colorName="#000000" start="2,0" stop="2,-1"/>
+      <lineStyle kind="LINEAFTER" colorName="#000000" start="2,0" stop="2,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#000000" start="2,0" stop="2,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#000000" start="2,-1" stop="2,-1"/>
+      --> 
+    </blockTableStyle>
+  
+    <blockTableStyle id="Table2">
+      <blockAlignment value="LEFT"/>
+      <blockValign value="TOP"/>
+      <lineStyle kind="LINEBEFORE" colorName="#000000" start="0,0" stop="0,-1"/>
+      <lineStyle kind="LINEAFTER" colorName="#000000" start="0,0" stop="0,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#000000" start="0,0" stop="0,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#000000" start="0,-1" stop="0,-1"/>
+    </blockTableStyle>
+    <blockTableStyle id="Table4">
+      <blockAlignment value="LEFT"/>
+      <blockValign value="TOP"/>
+
+      <lineStyle kind="LINEBEFORE" colorName="#000000" start="0,0" stop="0,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#000000" start="0,0" stop="0,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#000000" start="0,-1" stop="0,-1"/>
+      <lineStyle kind="LINEBEFORE" colorName="#000000" start="1,0" stop="1,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#000000" start="1,0" stop="1,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#000000" start="1,-1" stop="1,-1"/>
+      <lineStyle kind="LINEBEFORE" colorName="#000000" start="2,0" stop="2,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#000000" start="2,0" stop="2,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#000000" start="2,-1" stop="2,-1"/>
+      <lineStyle kind="LINEBEFORE" colorName="#000000" start="3,0" stop="3,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#000000" start="3,0" stop="3,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#000000" start="3,-1" stop="3,-1"/>
+      <lineStyle kind="LINEBEFORE" colorName="#000000" start="4,0" stop="4,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#000000" start="4,0" stop="4,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#000000" start="4,-1" stop="4,-1"/>
+      <lineStyle kind="LINEBEFORE" colorName="#000000" start="5,0" stop="5,-1"/>
+      <lineStyle kind="LINEAFTER" colorName="#000000" start="5,0" stop="5,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#000000" start="5,0" stop="5,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#000000" start="5,-1" stop="5,-1"/>
+      <lineStyle kind="LINEAFTER" colorName="#000000" start="6,0" stop="6,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#000000" start="6,0" stop="6,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#000000" start="6,-1" stop="6,-1"/>
+
+      <lineStyle kind="LINEAFTER" colorName="#000000" start="7,0" stop="7,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#000000" start="7,0" stop="7,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#000000" start="7,-1" stop="7,-1"/>
+
+    </blockTableStyle>
+    <blockTableStyle id="Table5">
+      <blockAlignment value="LEFT"/>
+      <blockValign value="TOP"/>
+   
+      <lineStyle kind="LINEBEFORE" colorName="#000000" start="0,0" stop="0,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#000000" start="0,0" stop="0,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#000000" start="0,-1" stop="0,-1"/>
+      <lineStyle kind="LINEBEFORE" colorName="#000000" start="1,0" stop="1,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#000000" start="1,0" stop="1,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#000000" start="1,-1" stop="1,-1"/>
+      <lineStyle kind="LINEBEFORE" colorName="#000000" start="2,0" stop="2,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#000000" start="2,0" stop="2,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#000000" start="2,-1" stop="2,-1"/>
+      <lineStyle kind="LINEBEFORE" colorName="#000000" start="3,0" stop="3,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#000000" start="3,0" stop="3,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#000000" start="3,-1" stop="3,-1"/>
+      <lineStyle kind="LINEBEFORE" colorName="#000000" start="4,0" stop="4,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#000000" start="4,0" stop="4,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#000000" start="4,-1" stop="4,-1"/>
+      <lineStyle kind="LINEBEFORE" colorName="#000000" start="5,0" stop="5,-1"/>
+      <lineStyle kind="LINEAFTER" colorName="#000000" start="5,0" stop="5,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#000000" start="5,0" stop="5,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#000000" start="5,-1" stop="5,-1"/>
+      <lineStyle kind="LINEAFTER" colorName="#000000" start="6,0" stop="6,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#000000" start="6,0" stop="6,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#000000" start="6,-1" stop="6,-1"/>
+
+      <lineStyle kind="LINEAFTER" colorName="#000000" start="7,0" stop="7,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#000000" start="7,0" stop="7,0"/>
+      <lineStyle kind="LINEBELOW" colorName="#000000" start="7,-1" stop="7,-1"/>
+
+  
+    </blockTableStyle>
+    <initialize>
+      <paraStyle name="all" alignment="justify"/>
+    </initialize>
+    <paraStyle name="P1" fontName="Helvetica-Bold" alignment="LEFT" fontSize="6.0" />
+    <paraStyle name="P2" fontName="Helvetica-Bold" alignment="CENTER" fontSize="8.0"/>
+    <paraStyle name="P3" fontName="Helvetica" alignment="LEFT" fontSize="6.0"/>
+    <paraStyle name="P4" fontName="Helvetica-Bold" alignment="CENTER" fontSize="6.0"/>
+    <paraStyle name="P5" fontName="Helvetica" alignment="LEFT" fontSize="6.0" />
+    <paraStyle name="P6" fontName="Helvetica" alignment="CENTER"/>
+    <paraStyle name="Standard" fontName="Helvetica"/>
+    <paraStyle name="Heading" fontName="Helvetica" fontSize="14.0" leading="17" spaceBefore="12.0" spaceAfter="6.0"/>
+    <paraStyle name="Text body" fontName="Helvetica" spaceBefore="0.0" spaceAfter="6.0"/>
+    <paraStyle name="List" fontName="Helvetica" spaceBefore="0.0" spaceAfter="6.0"/>
+    <paraStyle name="Caption" fontName="Helvetica" fontSize="12.0" leading="15" spaceBefore="6.0" spaceAfter="6.0"/>
+    <paraStyle name="Index" fontName="Helvetica"/>
+    <paraStyle name="Table Contents" fontName="Helvetica"/>
+    <paraStyle name="Table Heading" fontName="Helvetica" alignment="CENTER"/>
+    <images/>
+  </stylesheet>
+  <story>
+  <pto>
+  <pto_header>
+    <blockTable colWidths="106.0,90.0,90.0,208.0,70.0,63.0,54.0,75.0" style="Table4" rowHeights="0.4cm">
+      <tr>
+        <td>
+          <para style="P4">FECHA</para>
+        </td>
+        <td>
+          <para style="P4">N° FACT. / BOL.</para>
+        </td>
+        <td>
+          <para style="P4">N° GUIA / MOV.</para>
+        </td>
+        <td>
+          <para style="P4">CONCEPTO</para>
+        </td>
+        <td>
+          <para style="P4">INGRESO</para>
+        </td>
+        <td>
+          <para style="P4">EGRESO</para>
+        </td>
+        <td>
+          <para style="P4">SALDO</para>
+        </td>
+        <td>
+          <para style="P4">NOTA</para>
+        </td>
+      </tr>
+    </blockTable>
+  </pto_header>
+    <para style="P2">KARDEX DE MOVIMIENTO DE PRODUCTO POR ALMACEN</para>
+    <para style="P2">
+      <font color="white">-</font>
+    </para>
+
+
+    <blockTable colWidths="70.0,252.0,434.0" style="Table1" rowHeights="0.4cm">
+      <tr>
+        <td>
+          <para style="P1">PERIODO:</para>
+        </td>
+        <td>
+          <para style="P5">[[ formatLang(data['form']['fecha_desde'],date=True) ]] <b>AL</b> [[ formatLang(data['form']['fecha_hasta'],date=True) ]]</para>
+        </td>
+        <td>
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <para style="P1">PRODUCTO:</para>
+        </td>
+        <td>
+          <para style="P1"> [[ repeatIn(get_name_product(data['form']), 'm') ]] </para>
+          <para style="P5">[[ m['product_name'] or removeParentNode('para') ]]</para>
+        </td>
+        <td>
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <para style="P1">ALMACEN:</para>
+        </td>
+        <td>
+          <para style="P1"> [[ repeatIn(get_name_location(data['form']), 'l') ]] </para>
+          <para style="P5"> [[ l['location_name'] or removeParentNode('para') ]]</para>
+        </td>
+        <td>
+        </td>
+      </tr>
+
+    </blockTable>
+
+    <para style="P1">
+      <font color="white"> - </font>
+    </para>
+
+    <blockTable colWidths="106.0,90.0,90.0,208.0,70.0,63.0,54.0,75.0" style="Table4" rowHeights="0.4cm">
+      <tr>
+        <td>
+          <para style="P4">FECHA</para>
+        </td>
+        <td>
+          <para style="P4">N° FACT. / BOL.</para>
+        </td>
+        <td>
+          <para style="P4">N° GUIA / MOV.</para>
+        </td>
+        <td>
+          <para style="P4">CONCEPTO</para>
+        </td>
+        <td>
+          <para style="P4">INGRESO</para>
+        </td>
+        <td>
+          <para style="P4">EGRESO</para>
+        </td>
+        <td>
+          <para style="P4">SALDO</para>
+        </td>
+        <td>
+          <para style="P4">NOTA</para>
+        </td>
+      </tr>
+    </blockTable>
+    <section>
+      <para style="P2">[[ repeatIn(get_move_details(data['form']), 'p') ]]</para>
+      <blockTable colWidths="106.0,90.0,90.0,208.0,70.0,63.0,54.0,75.0" rowHeights="0.4cm" style="Table5">
+        <tr>
+          <td>
+           <para style="P3">[[ formatLang(p['date'], date_time = True)[:10]  or removeParentNode('para') ]] </para>
+          </td>
+          <td>
+           <para style="P3">[[ p['n_fact'] or removeParentNode('para') ]]</para>
+          </td>
+          <td>
+           <para style="P3">[[ p['n_guia'] or removeParentNode('para') ]]</para>
+          </td>
+          <td>
+            <para style="P3">[[ p['concept_move'] or removeParentNode('para') ]]</para>
+          </td>
+          <td>
+            <para style="P3">[[ p['product_qty_in']  or removeParentNode('para') ]]</para>
+          </td>
+          <td>
+            <para style="P3">[[ p['product_qty_out']  or removeParentNode('para') ]]</para>
+          </td>
+          <td>
+            <para style="P3">[[ p['move_saldo']  or removeParentNode('para') ]]</para>
+          </td>
+          <td>
+            <para style="P3"><font color="white"> </font></para>
+          </td>
+        </tr>
+      </blockTable>
+    </section>
+    <blockTable colWidths="106.0,90.0,90.0,208.0,70.0,63.0,54.0,75.0" style="Table5" rowHeights="0.4cm">
+        <tr>
+          <td>
+           <para style="P3">
+           </para>
+          </td>
+          <td>
+           <para style="P3">
+           </para>
+          </td>
+          <td>
+           <para style="P3">
+           </para>
+          </td>
+          <td>
+            <para style="P3">
+              TOTAL:
+            </para>
+          </td>
+          <td>
+            <para style="P3">
+              [[ p['move_qty_total_in']  or removeParentNode('para') ]]
+            </para>
+          </td>
+          <td>
+            <para style="P3">
+              [[ p['move_qty_total_out']  or removeParentNode('para') ]]
+            </para>
+          </td>
+          <td>
+            <para style="P3">
+             [[ p['move_qty_total_in'] - p['move_qty_total_out'] or removeParentNode('para') ]] 
+             <!--[[ p['move_saldo_final']  or removeParentNode('para') ]]              -->
+            </para>
+          </td>
+          <td>
+            <para style="P3"><font color="white"> </font></para>
+          </td>
+        </tr>
+      </blockTable>
+  </pto>
+  </story>
+</document>
+

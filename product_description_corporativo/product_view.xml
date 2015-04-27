@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+	<!-- Agrega el campo descripciones en el formulario de Producto  -->
+        <record model="ir.ui.view" id="view_product_descripcion_form_inherit">
+            <field name='name'>product.descripcion.form.inherited</field>
+            <field name='model'>product.product</field>
+            <field name="inherit_id" ref="product.product_normal_form_view"/>
+            <field name='arch' type='xml'>
+        		<notebook position="inside">
+        		   <page string="Ventas Corporativas">
+        	            <separator string="Descripciones para ventas Corporativas"/>
+        			    <field name="descripcion_ids">
+                            <tree string="Descripciones" editable="bottom">
+                                <field name="name"/>
+                                <field name="fecha"/>
+                            </tree>
+                        </field>
+                           <separator string="Descripciones corporativas"/>
+                        <field name="product_contenido" placeholder="Describa aquí los productos que contiene este nuevo producto"/>
+        		   </page>
+        		</notebook>
+            </field>
+        </record>
+
+	<!-- Agrega un campo venta_corporativa al formulario ORDEN DE VENTA -->
+        <record model="ir.ui.view" id="view_venta_corporativa_form">
+            <field name='name'>venta.corporativa.form</field>
+            <field name='model'>sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name='arch' type='xml'>
+        		<field name="price_unit" position="before">
+        	       <field name="descripcion_sale_id" domain="[('product_id','=',product_id)]" on_change="descripcion_sale_change(descripcion_sale_id,product_id,name,context)" string="Descrip. Coorp."/>
+        		</field>
+	       </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_porduct_descripcion_tree">
+            <field name="name">product.descripcion.tree</field>
+            <field name="model">product.descripcion</field>
+            <field name="arch" type="xml">
+                <tree string="Listas de descripciones">
+                    <field name="product_id"/>
+        		    <field name="name"/>
+        		    <field name="fecha"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_porduct_descripcion_form">
+            <field name="name">product.descripcion.form</field>
+            <field name="model">product.descripcion</field>
+            <field name="arch" type="xml">
+                <form string="Listas de descripciones"  version="7.0"> 
+		          <sheet>
+                    <group>
+		    	        <field name="product_id" />
+                    	<field name="name"  />
+	                    <field name="fecha"/>
+                    </group>
+                    <notebook>
+                       <page string="Ventas">                            
+                            <field name="sale_order_ids" readonly="1" nolabel="1"/>
+                       </page>
+                    </notebook>
+        		 </sheet>    
+    		    </form>
+            </field>
+        </record>
+
+    <record model="ir.actions.act_window" id="action_open_product_descripciom_form">
+        <field name="name">Lista de desripciones</field>
+        <field name="res_model">product.descripcion</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+	
+    <menuitem name="Descripcion productos" id="menu_descripcion" action="action_open_product_descripciom_form" parent="base.menu_product" sequence="2"/>
+
+
+    </data>
+</openerp>

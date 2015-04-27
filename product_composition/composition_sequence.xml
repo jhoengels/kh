@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+
+        <!-- Sequences for res.partner.medidavista -->
+        <record id="seq_type_product_make" model="ir.sequence.type">
+            <field name="name">CODIGO COMPOSICION PRODUCTOS</field>
+            <field name="code">product.make</field>
+        </record>
+
+        <record id="seq_product_make" model="ir.sequence">
+            <field name="name">COMPOSICION DE PRODUCTOS</field>
+            <field name="code">product.make</field>
+            <field name="prefix">COMP</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+            <field name="implementation">no_gap</field>
+        </record>
+
+    </data>
+</openerp>

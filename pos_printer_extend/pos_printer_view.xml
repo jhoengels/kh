@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<record model='ir.ui.view' id='pos_printer_form_view'>
+			<field name='name'>Pos Config Ticketeras Form Inherit</field>
+			<field name='model'>pos.config</field>
+			<field name='inherit_id' ref='point_of_sale.view_pos_config_form'/>
+			<field name='arch' type='xml'>
+            	<xpath expr="/form/sheet/group[2]" position="after">
+            		<group>
+	            		<group string="Impresora ticketera">
+	            			<field name="printer_id" class="oe_inline"/>
+	            			<field name="aut_sunat" class="oe_inline"/>
+	            			<field name="n_serie" class="oe_inline"/>
+	            		</group>
+	            		<group string="Serie Ticket Boleta/Factura" class="oe_inline">
+	            			<field name="sequencetb_id" class="oe_inline"/>
+	            			<field name="sequencetf_id" class="oe_inline"/>            			
+	            		</group>
+	            	</group>
+	            	<group string="Pie de pagina ticket">
+            			<field name="footer_ticket" class="oe_inline"/>
+            		</group>
+            	</xpath>
+			</field>
+		</record>
+	</data>
+</openerp>

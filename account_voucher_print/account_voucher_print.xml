@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<openerp>
+	<data>
+    		        <!-- atributo name es el mobre del reporte -->
+        <report
+                auto="False"
+                id="account_voucher_print" 
+                model="account.voucher"
+                name="account.print.voucher"
+                rml="account_voucher_print/report/account_voucher_print.rml" 
+                string="Impresion voucher"
+                multi="False"/>
+	</data>
+</openerp>

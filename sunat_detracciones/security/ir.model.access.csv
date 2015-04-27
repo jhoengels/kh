@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_sunat_detracc_user,sunat.detrac user,model_sunat_detraccion_adquiriente,group_sunat_detra_user,1,1,1,0
+access_sunat_detracc_gestor,sunat.detrac gestor,model_sunat_detraccion_adquiriente,group_sunat_detra_manager,1,1,1,1
+access_sunat_detracc_provee_user,sunat.detracc.adquir user,model_sunat_detraccion_adquiriente_proveedor,group_sunat_detra_user,1,1,1,0
+access_sunat_detraccion_provee_gestor,sunat.detracc.adquir gestor,model_sunat_detraccion_adquiriente_proveedor,group_sunat_detra_manager,1,1,1,1

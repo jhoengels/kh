@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_stock_causes_all,stock.move.causes all,model_stock_move_causes,,1,0,0,0
+access_stock_causes_user,stock.move.causes user,model_stock_move_causes,stock.group_stock_user,1,1,1,0
+access_stock_causes_gestor,stock.move.causes gestor,model_stock_move_causes,stock.group_stock_manager,1,1,1,1
+access_stock_subcauses_all,stock.move.subcauses all,model_stock_move_subcauses,,1,0,0,0
+access_stock_subcauses_user,stock.move.subcauses user,model_stock_move_subcauses,stock.group_stock_user,1,1,1,0
+access_stock_subcauses_gestor,stock.move.subcauses gestor,model_stock_move_subcauses,stock.group_stock_manager,1,1,1,1

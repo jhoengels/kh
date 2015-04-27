@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <report
+            id="kardex_product_report"
+            string="Kardex de producto"
+            model="stock.move"
+            name="kardex.product"
+            auto="False"
+            multi="True"
+            menu="False"
+            rml="product_kardex/report/product_kardex_report.rml"
+             />
+    </data>
+</openerp>

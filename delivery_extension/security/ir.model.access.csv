@@ -1,0 +1,16 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_stock_transportista_all,stock.transportista all,model_stock_transportista,,1,0,0,0
+access_stock_transportista_user,stock.transportista user,model_stock_transportista,stock.group_stock_user,1,1,1,0
+access_stock_transportista_gestor,stock.transportista gestor,model_stock_transportista,stock.group_stock_manager,1,1,1,1
+
+access_stock_transportista_sede_all,stock.transportista.sede all,model_stock_transportista_sede,,1,0,0,0
+access_stock_transportista_sede_user,stock.transportista.sede user,model_stock_transportista_sede,stock.group_stock_user,1,1,1,0
+access_stock_transportista_sede_gestor,stock.transportista.sede gestor,model_stock_transportista_sede,stock.group_stock_manager,1,1,1,1
+
+access_stock_transportista_conductor_all,stock.transportista.conductor all,model_stock_transportista_conductor,,1,0,0,0
+access_stock_transportista_conductor_user,stock.transportista.conductor user,model_stock_transportista_conductor,stock.group_stock_user,1,1,1,0
+access_stock_transportista_conductor_gestor,stock.transportista.conductor gestor,model_stock_transportista_conductor,stock.group_stock_manager,1,1,1,1
+
+access_stock_transportista_carro_all,stock.transportista.carro all,model_stock_transportista_carro,,1,0,0,0
+access_stock_transportista_carro_user,stock.transportista.carro user,model_stock_transportista_carro,stock.group_stock_user,1,1,1,0
+access_stock_transportista_carro_gestor,stock.transportista.carro gestor,model_stock_transportista_carro,stock.group_stock_manager,1,1,1,1

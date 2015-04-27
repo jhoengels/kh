@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data> 
+        <record model="ir.ui.view" id="view_stock_move_causes_tree">
+            <field name="name">stock.causes.tree</field>
+            <field name="model">stock.move.causes</field>
+            <field name="arch" type="xml">
+                <tree string="Listar de registro">
+            		   <field name="name"/>
+                   <field name="active"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_stock_move_causes_form">
+            <field name="name">stock.causes.form</field>
+            <field name="model">stock.move.causes</field>
+            <field name="arch" type="xml">
+            <form string="Nuevo registro" version="7.0">
+          		<sheet>
+          			<group>
+                  <field name="name"/>
+                  <field name="active"/> 
+                 </group> 
+                 <notebook>
+                    <page  string="Subcausas">
+                      <field name="subcauses_ids">
+                        <tree string="Components" editable="bottom">
+                            <field name="name"/>
+                        </tree>
+                      </field>
+                    </page>
+          			 </notebook>
+          		  </sheet>		
+            </form>
+            </field> 
+	      </record>
+       
+        <record model="ir.ui.view" id="view_stock_move_subcauses_form">
+            <field name="name">stock.subcauses.form</field>
+            <field name="model">stock.move.subcauses</field>
+            <field name="arch" type="xml">
+              <form string="Nuevo registro" version="7.0">
+                  <sheet>
+                    <group>
+                      <field name="name"/>
+                      <field name="active"/> 
+                     </group> 
+                    </sheet>
+              </form>    
+            </field> 
+        </record>
+
+        <record model="ir.ui.view" id="view_stock_move_causes_form_inherit">
+            <field name='name'>stock.move.causes.form.inherited</field>
+            <field name='model'>stock.move</field>
+            <field name="inherit_id" ref="stock.view_move_form"/>
+            <field name='arch' type='xml'>
+                  <field name="name" position="after" >
+                      <field name="cause_id" on_change="onchange_causes(cause_id,context)" /> 
+                      <field name="subcause_id" domain="[('cause_id','=',cause_id)]"/>
+                  </field>
+            </field>
+        </record>        
+
+        <record id="view_stock_pickin_cause_form" model="ir.ui.view">
+            <field name="name">stock.picking.causes.form</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+                <field name="move_lines" position="before">
+                  <group colspan="1" col="6">
+                      <field name="cause_id" on_change="onchange_causes(cause_id,context)"/>
+                      <field name="subcause_id" domain="[('cause_id','=',cause_id)]"/>
+                  </group>
+                </field>
+ 
+
+            </field>
+        </record>
+
+      <record id="view_stock_pickin_in_causes_form" model="ir.ui.view">
+            <field name="name">stock.picking.in.causes.form</field>
+            <field name="model">stock.picking.in</field>
+            <field name="inherit_id" ref="stock.view_picking_in_form"/>
+            <field name="arch" type="xml">
+                <field name="move_lines" position="before">
+                    <group colspan="1" col="6">
+                        <field name="cause_id" on_change="onchange_causes(cause_id,context)"/>
+                        <field name="subcause_id" domain="[('cause_id','=',cause_id)]"/>
+                    </group>
+                </field>
+            </field>
+        </record>
+
+        <record id="view_stock_pickin_out_causes_form" model="ir.ui.view">
+            <field name="name">stock.picking.out.causes.form</field>
+            <field name="model">stock.picking.out</field>
+            <field name="inherit_id" ref="stock.view_picking_out_form"/>
+            <field name="arch" type="xml">
+                <field name="move_lines" position="before">
+                    <group colspan="1" col="6">
+                        <field name="cause_id" on_change="onchange_causes(cause_id,context)"/>
+                        <field name="subcause_id" domain="[('cause_id','=',cause_id)]"/>
+                    </group>
+                </field>
+            </field>
+        </record>
+
+      <record model="ir.actions.act_window" id="action_open_stock_move_causes_form">
+          <field name="name">Causas de movimientos</field>
+          <field name="res_model">stock.move.causes</field>
+          <field name="view_type">form</field>
+          <field name="view_mode">tree,form</field>
+      </record>
+
+    <menuitem name="Causas movimientos" id="menu_causes_form" parent="stock.menu_stock_root"/>
+
+    <menuitem name="Causas movimientos" id="menu_causes_confi_form" action="action_open_stock_move_causes_form" parent="menu_causes_form"/>
+
+
+  </data>
+</openerp>
+

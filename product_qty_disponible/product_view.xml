@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+
+        <record id="product_product_disponible_form_inherit" model="ir.ui.view">
+            <field name="name">product.product.disponible.view.form</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="stock.view_normal_procurement_locations_form"/>
+            <field eval="8" name="priority"/>
+            <field name="arch" type="xml">
+               	<field name="incoming_qty" position="before">
+                    <field name="qty_reservado" />
+                    <field name="qty_disponible" /> 
+		        </field>
+            </field>
+        </record>
+
+
+        <record id="product_product_disponible_tree_inherit" model="ir.ui.view">
+            <field name="name">product.product.disponible.view.tree</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_product_tree_view"/>
+            <field eval="8" name="priority"/>
+            <field name="arch" type="xml">
+                <field name="qty_available" position="after">
+                        <field name="qty_reservado" />
+                        <field name="qty_disponible" />
+                        <field name="incoming_qty" />
+                </field>
+            </field>
+        </record>
+
+<!--
+        <record id="product_search_attribute_form_view_inherit" model="ir.ui.view">
+            <field name="name">product.product.attribute.view.search</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_search_form_view"/>
+            <field eval="8" name="priority"/>
+            <field name="arch" type="xml">
+                <field  name="name" position="replace">
+                   <field name="name" string="Product" filter_domain="['|','|',('name','ilike',self),('default_code','ilike',self),('procedencia','ilike',self)]"/>
+                </field>
+        </field>
+        </record>
+-->
+
+        <record id="view_product_by_location_tree3" model="ir.ui.view">
+            <field name="name">stock.product.by.location.tree</field>
+            <field name="model">stock.location</field>
+            <field name="inherit_id" ref="stock.view_location_tree2"/>
+            <field eval="16" name="priority"/>
+            <field name="arch" type="xml">
+                <field name="stock_real" position="after">
+                     <field name="qty_disponible" invisible="'product_id' not in context"/>
+                </field>
+            </field>
+        </record> 
+
+    </data>
+</openerp>

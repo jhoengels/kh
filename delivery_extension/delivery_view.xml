@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>        
+    <data>
+        <record id="view_stock_pickin_delivery_form" model="ir.ui.view">
+            <field name="name">stock.picking.delivery.form</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+                <page string="Additional Info" position="before">
+                    <page string="Tramos">
+                        <group col="12" colspan="2">
+                            <group col="2" colspan="2">
+                                <separator colspan="2" string="Tramo 1"/>
+                                <field name="transportista_id"/>
+                                <field name="conductor_id" domain="[('transportista_id','=',transportista_id)]" options="{'limit': 10, 'create': false, 'create_edit': false}"/>
+                                <field name="carro_id" domain="[('transportista_id','=',transportista_id)]" options="{'limit': 10, 'create': false, 'create_edit': false}"/>
+                                <field name="partida_id" domain="[('transportista_id','=',transportista_id)]" options="{'limit': 10, 'create': false, 'create_edit': false}"/>
+                                <field name="llegada_id" string="Punto llegada sucursal" domain="[('transportista_id','=',transportista_id)]" options="{'limit': 10, 'create': false, 'create_edit': false}"/>
+                            </group>
+                            <group col="2" colspan="2">
+                                <separator colspan="2" string="Tramo 2"/>
+                                <field name="transportista2_id"/>
+                                <field name="conductor2_id" domain="[('transportista_id','=',transportista2_id)]" options="{'limit': 10, 'create': false, 'create_edit': false}"/>
+                                <field name="carro2_id" domain="[('transportista_id','=',transportista2_id)]" options="{'limit': 10, 'create': false, 'create_edit': false}"/>
+                                <field name="partida2_id" domain="[('transportista_id','=',transportista2_id)]" options="{'limit': 10, 'create': false, 'create_edit': false}"/>  
+                                <field name="llegada2_id" domain="[('transportista_id','=',transportista2_id)]" options="{'limit': 10, 'create': false, 'create_edit': false}"/> 
+                                <field name="llegadacliente2_id" domain="[('customer','=',True)]" options="{'limit': 10, 'create': false, 'create_edit': false}"/>
+                            </group>
+                        </group>
+                    </page>
+                </page>
+            </field>
+        </record>
+
+
+        <record id="view_stock_pickin_out_delivery_form" model="ir.ui.view">
+            <field name="name">stock.picking.delivery.form</field>
+            <field name="model">stock.picking.out</field>
+            <field name="inherit_id" ref="stock.view_picking_out_form"/>
+            <field name="arch" type="xml">
+                <page string="Additional Info" position="before">
+                    <page string="Tramos">
+                        <group col="12" colspan="2">
+                            <group col="2" colspan="2">
+                                <separator colspan="2" string="Tramo 1"/>
+                                <field name="transportista_id"/>
+                                <field name="conductor_id" domain="[('transportista_id','=',transportista_id)]" options="{'limit': 10, 'create': false, 'create_edit': false}"/>
+                                <field name="carro_id" domain="[('transportista_id','=',transportista_id)]" options="{'limit': 10, 'create': false, 'create_edit': false}"/>
+                                <field name="partida_id" domain="[('transportista_id','=',transportista_id)]" options="{'limit': 10, 'create': false, 'create_edit': false}"/>
+                                <field name="llegadacliente_id" domain="[('customer','=',True)]" on_change="onchange_llegadacliente(llegadacliente_id,transportista_id,context)" context="{'search_default_customer':1, 'show_address': 1}" options="{'always_reload': True, 'create': false, 'create_edit': false}"/>
+                               <!-- <field name="llegada_id" string="Punto llegada agencia"/> -->
+                            </group>
+                            <group col="2" colspan="2">
+                                <separator colspan="2" string="Tramo 2"/>
+                                <field name="transportista2_id" on_change="onchange_transportista2(transportista2_id,llegadacliente_id,context)"/>
+                                <field name="conductor2_id" domain="[('transportista_id','=',transportista2_id)]" options="{'limit': 10, 'create': false, 'create_edit': false}"/>
+                                <field name="carro2_id" domain="[('transportista_id','=',transportista2_id)]" options="{'limit': 10, 'create': false, 'create_edit': false}"/>
+                                <field name="partida2_id" domain="[('transportista_id','=',transportista2_id)]" options="{'limit': 10, 'create': false, 'create_edit': false}"/>  
+                                <field name="llegada2_id" domain="[('transportista_id','=',transportista2_id)]" options="{'limit': 10, 'create': false, 'create_edit': false}"/>
+                                <field name="llegadacliente2_id" domain="[('customer','=',True)]" options="{'limit': 10, 'create': false, 'create_edit': false}"/>
+                            </group>
+                        </group>
+                    </page>
+                </page>
+            </field>
+        </record>
+
+
+
+        <record id="view_stock_transportista_form" model="ir.ui.view">
+            <field name="name">stock.transportista.form</field>
+            <field name="model">stock.transportista</field>
+            <field name="arch" type="xml">
+            <form string="Nuevo registro" version="7.0">
+                <sheet>
+                    <group>
+                          <field name="name" string="Razón Social"/>
+                          <field name="ruc"/> 
+                    </group> 
+                    <notebook>
+                        <page  string="Sedes">
+                          <field name="sede_ids">
+                            <tree string="Sucursales" editable="bottom">
+                                <field name="name"/>
+                                <field name="state_id"/>
+                                <field name="active"/>
+                            </tree>
+                          </field>
+                        </page>
+                        <page  string="Conductores">
+                          <field name="conductor_ids">
+                            <tree string="Conductores" editable="bottom">
+                                <field name="name"/>
+                                <field name="licencia"/>
+                                <field name="active"/>
+                            </tree>
+                          </field>
+                        </page>
+                        <page  string="Unidades de Transporte">
+                          <field name="carro_ids">
+                            <tree string="Unidades de Transporte" editable="bottom">
+                                <field name="name"/>
+                                <field name="marca"/>
+                                <field name="active"/>
+                            </tree>
+                          </field>
+                        </page>
+
+                    </notebook>
+                </sheet>      
+            </form>
+            </field> 
+        </record>
+
+        <record id="view_stock_transportista_tree" model="ir.ui.view">
+            <field name="name">stock.transportista.tree</field>
+            <field name="model">stock.transportista</field>
+            <field name="arch" type="xml">
+                <tree string="Listar de registro">
+                        <field name="name"/>
+                        <field name="ruc"/>
+                </tree>     
+            </field> 
+        </record>
+
+        <record model="ir.ui.view" id="view_stock_transportista_search">
+            <field name="name">stock.transportisata.search</field>
+            <field name="model">stock.transportista</field>
+            <field name="arch" type="xml">
+                <search string="Listas de pacientes">
+                   <field name="name" filter_domain="['|',('name','ilike',self),('ruc','ilike',self)]" />
+                </search>
+            </field>
+        </record>
+
+
+        <record id="view_stock_transportista_sede_form" model="ir.ui.view">
+            <field name="name">stock.transportisata.sede.form</field>
+            <field name="model">stock.transportista.sede</field>
+            <field name="arch" type="xml">
+            <form string="Nuevo registro" version="7.0">
+                <sheet>
+                    <group>
+                          <field name="name"/>
+                          <field name="state_id"/>
+                          <!--<field name="transportista_id"/> -->
+                    </group> 
+                </sheet>      
+            </form>
+            </field> 
+        </record>
+
+        <record id="view_stock_transportista_conductor_form" model="ir.ui.view">
+            <field name="name">stock.transportisata.conductor.form</field>
+            <field name="model">stock.transportista.conductor</field>
+            <field name="arch" type="xml">
+            <form string="Nuevo registro" version="7.0">
+                <sheet>
+                    <group>
+                          <field name="name"/>
+                          <field name="licencia"/> 
+                          <!-- <field name="transportista_id"/> -->
+                    </group> 
+                </sheet>      
+            </form>
+            </field> 
+        </record>
+        
+        <record id="view_stock_transportista_carro_form" model="ir.ui.view">
+            <field name="name">stock.transportisata.carro.form</field>
+            <field name="model">stock.transportista.carro</field>
+            <field name="arch" type="xml">
+            <form string="Nuevo registro" version="7.0">
+                <sheet>
+                    <group>
+                        <field name="name"/> 
+                        <field name="marca"/>
+                      <!--  <field name="transportista_id"/>  -->                       
+                    </group> 
+                </sheet>      
+            </form>
+            </field> 
+        </record>
+
+        <record model="ir.actions.act_window" id="action_open_stock_transportista_form">
+            <field name="name">Empresas transportistas</field>
+            <field name="res_model">stock.transportista</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+<!--        <menuitem name="Transportistas" id="menu_trasnportistas_form" action="action_open_stock_transportista_form" parent="stock.menu_stock_configuration"/> -->
+        <menuitem name="Transportistas" id="menu_trasnportistas_form" parent="stock.menu_stock_root"/>
+        <menuitem name="Transportistas" id="menu_trasnportistas_config_form" action="action_open_stock_transportista_form" parent="menu_trasnportistas_form"/>
+
+    </data>
+</openerp>

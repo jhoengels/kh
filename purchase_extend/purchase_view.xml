@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+	<data>
+
+        <record model='ir.ui.view' id='view_purchase_type_order_form'>
+                <field name='name'>purchase.type.order.form.inherit</field>
+                <field name='model'>purchase.order</field>
+                <field name='inherit_id' ref='purchase.purchase_order_form'/>
+                <field name='arch' type='xml'>
+                    <field name="warehouse_id" position="attributes">
+                         <attribute name="domain">[('recep_compras','=',True)]</attribute>
+                         <attribute name="attrs">{'readonly': [('state','!=','draft')]}</attribute>
+                    </field> 
+                    <field name="warehouse_id" position='after'>
+                        <field name="tipo_compra"  attrs="{'readonly': [('state','!=','draft')]}"/>
+                	</field>
+                </field>
+        </record>
+        <record model='ir.ui.view' id='view_stock_warehouse_purchase_form'>
+                <field name='name'>stock.warehouse.purchase.form.inherit</field>
+                <field name='model'>stock.warehouse</field>
+                <field name='inherit_id' ref='stock.view_warehouse'/>
+                <field name='arch' type='xml'>
+                    <field name="partner_id" position='after'>
+                        <field name="recep_compras" />
+                    </field>
+                </field>
+        </record>
+
+        <!-- Ocultar precio de costo vista form-->
+        <record model='ir.ui.view' id='view_product_costo_ocultar_form'>
+                <field name='name'>product.cost.ocultar.form.inherit</field>
+                <field name='model'>product.product</field>
+                <field name='inherit_id' ref='stock.view_product_standard_price_form'/>
+                <field name='arch' type='xml'>
+                    <field name="standard_price" position='attributes'>
+                         <attribute name="groups">purchase_extend.group_purchase_price</attribute>
+                    </field>                 
+                    <xpath expr="//button[@name='%(stock.action_view_change_standard_price)d']" position="replace">
+                        <button name="%(stock.action_view_change_standard_price)d" string="- update"
+                            type="action" attrs="{'invisible':[('cost_method','&lt;&gt;','average')]}"
+                            class="oe_link" groups="purchase_extend.group_purchase_price"/>
+                    </xpath>
+
+                </field>
+        </record>
+    
+
+        <!-- Ocultar precio de costo vista tree -->
+        <record model='ir.ui.view' id='view_product_costo_ocultar_tree'>
+                <field name='name'>product.cost.ocultar.tree.inherit</field>
+                <field name='model'>product.product</field>
+                <field name='inherit_id' ref='product.product_product_tree_view'/>
+                <field name='arch' type='xml'>
+                    <field name="standard_price"  position='attributes'>
+                         <attribute name="invisible">0</attribute>
+                         <attribute name="groups">purchase_extend.group_purchase_price</attribute>
+                    </field>
+                </field>
+        </record>
+
+        <!-- Oculta actualizar stock de vista form-->
+        <record model='ir.ui.view' id='view_product_sctok_ocultar_form'>
+                <field name='name'>product.stock.ocultar.form.inherit</field>
+                <field name='model'>product.product</field>
+                <field name='inherit_id' ref='stock.view_normal_procurement_locations_form'/>
+                <field name='arch' type='xml'>             
+                    <xpath expr="//button[@name='%(stock.action_view_change_product_quantity)d']" position="replace">
+                        <button name="%(stock.action_view_change_product_quantity)d" string="- update"
+                            type="action" attrs="{'invisible':[('cost_method','&lt;&gt;','average')]}"
+                            class="oe_link" groups="purchase_extend.group_update_stock"/>
+                    </xpath>
+
+                </field>
+        </record>
+
+
+        <record id="purchase_import_form_action" model="ir.actions.act_window">
+            <field name="name">Compras importadas</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">purchase.order</field>
+            <field name="view_mode">tree,form,graph,calendar</field>
+            <field name="domain">[('tipo_compra','=','02')]</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Pulse para crear un presupuesto que será convertido en pedido de venta. 
+              </p><p>
+                Use este menú para buscar sus pedidos de compra por referencias, proveedor, productos, etc. Para cada pedido de venta, puede controlar la discusión relativa con el proveedor, controlar los productos recibidos y controlar las facturas de proveedor. 
+              </p>
+            </field>
+        </record>
+
+        <menuitem action="purchase_import_form_action" id="menu_purchase_import_form_action" parent="purchase.menu_procurement_management" groups="group_purchase_price"/>
+
+	</data>
+</openerp>
