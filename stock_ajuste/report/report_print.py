@@ -19,31 +19,30 @@
 #
 ##############################################################################
 
-{
-    "name" : "Ajuste de inventario",
-    "version" : "0.1",
-    "author" : "Ing. Javier Salazar Carlos",
-    "description" : """
-                    Permite gestionar los ajustes de inventario en los almacenes
-                    """,
-    "website" : "http://salazarcarlos.com",
-    "depends" : ["base", "stock", 'product',],
-    "data" : [
-            'security/security.xml',
-            'security/ir.model.access.csv',
-            'stock_ajuste.xml',
-            'sequence.xml',
-            'report.xml',
-            'location_data.xml',            
+import time
+from openerp.report import report_sxw
 
-    ],
-    "demo_xml" : [
-    ],
-    "update_xml" : [
+class stock_ajuste_move(report_sxw.rml_parse):
+    def __init__(self, cr, uid, name, context):
+        super(stock_ajuste_move, self).__init__(cr, uid, name, context=context)
+        self.localcontext.update({
+             'time': time,
+             'qty_total':self._qty_total
+        })
 
-    ],
-    "active": False,
-    "installable": True,
-}
+    def _qty_total(self, objects):
+        total = 0.0
+        #uom = objects[0].product_uom.name
+        uom = objects[0].product_id.uom_id.name
+        for obj in objects:
+            total += obj.product_qty
+        return {'quantity':total,'uom':uom}
 
+report_sxw.report_sxw(
+    'report.stock.ajuste.print',
+    'stock.ajuste',
+    'addons/stock_ajuste/report/report_print.rml',
+    parser=stock_ajuste_move,
+    header='internal'
+)
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

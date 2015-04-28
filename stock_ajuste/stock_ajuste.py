@@ -1,31 +1,24 @@
+# -*- coding: utf-8 -*-
+##############################################################################
+#
+#    OpenERP, Open Source Management Solution
+#    Copyright (C) 2015 S&C (<http://salazarcarlos.com>).
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU Affero General Public License as
+#    published by the Free Software Foundation, either version 3 of the
+#    License, or (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU Affero General Public License for more details.
+#
+#    You should have received a copy of the GNU Affero General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+##############################################################################
 
-# -*- encoding: utf-8 -*-
-##############################################################################
-#
-# OpenERP, Open Source Management Solution
-# Copyright (c) 2014 KIDDYS HOUSE SAC. (http://kiddyshouse.com).
-#
-# WARNING: This program as such is intended to be used by professional
-# programmers who take the whole responsability of assessing all potential
-# consequences resulting from its eventual inadequacies and bugs
-# End users who are looking for a ready-to-use solution with commercial
-# garantees and support are strongly adviced to contract a Free Software
-# Service Company
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
-#
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-##############################################################################
 
 
 from openerp.osv import osv,fields,orm
@@ -71,6 +64,7 @@ class stock_ajuste(osv.osv):
     _columns = {
         'name': fields.char('Nombre',),
         'descripcion': fields.char('Descripcion',),
+        'user_id': fields.many2one('res.users', 'Usuario', select=True, track_visibility='onchange'),        
         'location_id': fields.many2one('stock.location', 'Ubicacion origen', required=True,states={'done':[('readonly',True)], 'cancel':[('readonly',True)]}),
         'location_dest_id': fields.many2one('stock.location', 'Ubicacion destino', required=True,states={'done':[('readonly',True)], 'cancel':[('readonly',True)]}),
         'date': fields.datetime('Fecha', required=True, select=1, states={'done':[('readonly',True)],'cancel':[('readonly',True)]}),
@@ -103,6 +97,7 @@ class stock_ajuste(osv.osv):
         'date': lambda *a: time.strftime('%Y-%m-%d %H:%M:%S'),
         'state': 'draft',
         'location_id': _default_location_source,
+        'user_id': lambda obj, cr, uid, context: uid,        
    }
 
     def create(self, cr, uid, vals, context=None):

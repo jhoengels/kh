@@ -19,31 +19,4 @@
 #
 ##############################################################################
 
-{
-    "name" : "Ajuste de inventario",
-    "version" : "0.1",
-    "author" : "Ing. Javier Salazar Carlos",
-    "description" : """
-                    Permite gestionar los ajustes de inventario en los almacenes
-                    """,
-    "website" : "http://salazarcarlos.com",
-    "depends" : ["base", "stock", 'product',],
-    "data" : [
-            'security/security.xml',
-            'security/ir.model.access.csv',
-            'stock_ajuste.xml',
-            'sequence.xml',
-            'report.xml',
-            'location_data.xml',            
-
-    ],
-    "demo_xml" : [
-    ],
-    "update_xml" : [
-
-    ],
-    "active": False,
-    "installable": True,
-}
-
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
+import report_print
