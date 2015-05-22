@@ -45,7 +45,15 @@
       <lineStyle kind="LINEBEFORE" colorName="#000000" start="7,0" stop="7,-1"/>
       <lineStyle kind="LINEAFTER" colorName="#000000" start="7,0" stop="7,-1"/>
       <lineStyle kind="LINEABOVE" colorName="#000000" start="7,0" stop="7,0"/>
-      <lineStyle kind="LINEBELOW" colorName="#000000" start="7,-1" stop="7,-1"/>
+
+      <lineStyle kind="LINEBEFORE" colorName="#000000" start="8,0" stop="8,-1"/>
+      <lineStyle kind="LINEAFTER" colorName="#000000" start="8,0" stop="8,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#000000" start="8,0" stop="8,0"/>      
+
+      <lineStyle kind="LINEBELOW" colorName="#000000" start="8,-1" stop="8,-1"/>
+
+
+
     </blockTableStyle>
     <blockTableStyle id="Tabla4">
       <blockAlignment value="LEFT"/>
@@ -74,15 +82,22 @@
       <lineStyle kind="LINEBEFORE" colorName="#000000" start="7,0" stop="7,-1"/>
       <lineStyle kind="LINEAFTER" colorName="#000000" start="7,0" stop="7,-1"/>
       <lineStyle kind="LINEABOVE" colorName="#000000" start="7,0" stop="7,0"/>
-      <lineStyle kind="LINEBELOW" colorName="#000000" start="7,-1" stop="7,-1"/>
+
+      <lineStyle kind="LINEBEFORE" colorName="#000000" start="8,0" stop="8,-1"/>
+      <lineStyle kind="LINEAFTER" colorName="#000000" start="8,0" stop="8,-1"/>
+      <lineStyle kind="LINEABOVE" colorName="#000000" start="8,0" stop="8,0"/>
+
+      <lineStyle kind="LINEBELOW" colorName="#000000" start="8,-1" stop="8,-1"/>
     </blockTableStyle>
+
+
     <blockTableStyle id="Tabla5">
       <blockAlignment value="LEFT"/>
       <blockValign value="TOP"/>
       <lineStyle kind="LINEBEFORE" colorName="#000000" start="0,0" stop="0,-1"/>
       <lineStyle kind="LINEABOVE" colorName="#000000" start="0,0" stop="0,0"/>
       <lineStyle kind="LINEBELOW" colorName="#000000" start="0,-1" stop="0,-1"/>
-      <lineStyle kind="LINEBEFORE" colorName="#000000" start="1,0" stop="1,-1"/>
+      <lineStyle kind="LINEBEFORE" colorName="#ffffff" start="1,0" stop="1,-1"/>
       <lineStyle kind="LINEABOVE" colorName="#000000" start="1,0" stop="1,0"/>
       <lineStyle kind="LINEBELOW" colorName="#000000" start="1,-1" stop="1,-1"/>
       <lineStyle kind="LINEBEFORE" colorName="#000000" start="2,0" stop="2,-1"/>
@@ -171,6 +186,8 @@
     <paraStyle name="P51" fontName="Helvetica-Bold" fontSize="6.0" leading="10"/>
     <paraStyle name="P6" fontName="Helvetica" fontSize="8.0" leading="10" alignment="CENTER"/>
     <paraStyle name="P61" fontName="Helvetica-Bold" fontSize="8.0" leading="10" alignment="CENTER"/>
+    <paraStyle name="P611" fontName="Helvetica-Bold" fontSize="8.0" leading="10" alignment="RIGHT"/>
+    <paraStyle name="P612" fontName="Helvetica-Bold" fontSize="8.0" leading="10" alignment="RIGHT"/>
     <paraStyle name="Standard" fontName="Helvetica"/>
     <paraStyle name="Heading" fontName="Helvetica" fontSize="14.0" leading="17" spaceBefore="12.0" spaceAfter="6.0"/>
     <paraStyle name="Text body" fontName="Helvetica" spaceBefore="0.0" spaceAfter="7.0"/>
@@ -244,7 +261,7 @@
     <para style="Standard">
       <font color="white"> -</font>
     </para>
-    <blockTable colWidths="38.0,41.0,105.0,105.0,98.0,38.0,48.0,66.0" style="Tabla3">
+    <blockTable colWidths="38.0,41.0,88.0,88.0,98.0,38.0,38.0,48.0,66.0" style="Tabla3">
       <tr>
         <td>
           <para style="P61">ITEMS</para>
@@ -256,7 +273,7 @@
           <para style="P61">PRODUCTO</para>
         </td>
         <td>
-          <para style="P61">CANT/PZS./KITS/JGOS</para>
+          <para style="P61">CANT/PZS./ KITS/JGOS</para>
         </td>
         <td>
           <para style="P61">IMAGEM</para>
@@ -264,6 +281,11 @@
         <td>
           <para style="P61">CANT.</para>
         </td>
+
+        <td>
+          <para style="P61">DSCTO.</para>
+        </td>
+
         <td>
           <para style="P61">P. UNIT</para>
         </td>
@@ -274,7 +296,7 @@
     </blockTable>
      <section>
      <para>[[ repeatIn(o.cotizacion_line,'l') ]] </para> 
-    <blockTable colWidths="38.0,41.0,105.0,105.0,98.0,38.0,48.0,66.0" style="Tabla4">      
+    <blockTable colWidths="38.0,41.0,88.0,88.0,98.0,38.0,38.0,48.0,66.0" style="Tabla4">      
       <tr>
         <td>
           <para style="P6">
@@ -297,16 +319,23 @@
           </para>
         </td>
         <td>            
-             <image width="22.0mm" height="22.0mm"> [[ l.product_id.image_medium or removeParentNode('image') ]]</image>          
-        </td>
+          <image width="22.0mm" height="22.0mm"> [[ l.product_id.image_medium or removeParentNode('image') ]]</image>          
+        </td>        
         <td>
           <para style="P6">
             [[ l.product_uom_qty ]]         
           </para>
         </td>
+
         <td>
           <para style="P6">
-              [[ l.price_unit ]]
+            [[ l.dscto_unit>0.0 and l.dscto_unit or removeParentNode('para') ]]%          
+          </para>
+        </td>
+
+        <td>
+          <para style="P6">
+              [[ l.price_unit_venta ]]
           </para>
         </td>
         <td>
@@ -318,7 +347,7 @@
     </blockTable>
     </section>
 
-    <blockTable colWidths="390.0,72.0,76.0" style="Tabla5">
+    <blockTable colWidths="290.0,172.0,81.0" style="Tabla5">
       <tr>
         <td>
           <para style="P6">
@@ -326,11 +355,15 @@
           </para>
         </td>
         <td>
-          <para style="P61">TOTAL S/.</para>
+          <para style="P612">TOTAL S/.</para>
+          <para style="P612">[[ o.dscto_global > 0.0 and 'DSCTO S/.' or removeParentNode('para')]] </para>
+          <para style="P612">[[ o.dscto_global > 0.0 and 'TOTAL CON DSCTO S/.' or removeParentNode('para')]] </para>
         </td>
         <td>
-          <para style="P61">
-              [[ o.total ]]
+          <para style="P611">[[ o.total ]] </para>
+          <para style="P611">[[ o.dscto_global > 0.0 and formatLang(o.total * o.dscto_global/100.00, dp='Account') or removeParentNode('para')]] 
+          </para>
+          <para style="P611">[[ o.dscto_global > 0.0 and formatLang(o.total  - o.total * o.dscto_global/100.00, dp='Account') or removeParentNode('para')]] 
           </para>
         </td>
       </tr>
@@ -342,7 +375,7 @@
       <tr>
         <td>
           <para style="P2"><b>Nota:</b></para>
-          <para style="P1">3 años de garantía en productos de espuma “solo costuras”</para>
+          <para style="P1">3 años de garantía en productos de espuma "solo costuras"</para>
         </td>
       </tr>
     </blockTable>
@@ -410,7 +443,7 @@
             <font color="white"> </font>
           </para>
           <para style="P4">Horario de atención y despacho:</para>
-          <para style="P4">Lunes – Viernes de 9:00 am – 4:00 pm</para>
+          <para style="P4">Lunes - Viernes de 9:00 am - 4:00 pm</para>
         </td>
       </tr>
     </blockTable>
@@ -463,6 +496,7 @@
         </td>
       </tr>
     </blockTable>
+    <!--
     <blockTable colWidths="135.0,135.0,135.0,135.0" style="Tabla10">
       <tr>
         <td>
@@ -508,6 +542,8 @@
         </td>
       </tr>
     </blockTable>
+    -->
+
     <para style="Text body"/>
   </pto>
   </story>
