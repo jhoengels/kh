@@ -49,7 +49,7 @@ class product_kardex_wizard(osv.osv_memory):
     }
 
     _defaults = {
-    	'fecha_desde': fields.date.context_today,
+    	'fecha_desde': '2015-01-01',
     	'fecha_hasta': fields.date.context_today,
     }
 
