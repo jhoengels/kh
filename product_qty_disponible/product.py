@@ -77,13 +77,18 @@ class product_product(osv.osv):
                 location_ids = location_obj.search(cr, uid, [('name','ilike',context['location'])], context=context)
             else:
                 location_ids = context['location']
+            #_logger.error("FIELDS NAMESSSSSSSSS 2: %r", where)
         else:
-            location_ids = []
-            wids = warehouse_obj.search(cr, uid, [], context=context)
-            if not wids:
-                return res
-            for w in warehouse_obj.browse(cr, uid, wids, context=context):
-                location_ids.append(w.lot_stock_id.id)
+            location_ids = []            
+            #wids = warehouse_obj.search(cr, uid, [], context=context)
+            #if not wids:
+            #    return res
+            #for w in warehouse_obj.browse(cr, uid, wids, context=context):
+            #    location_ids.append(w.lot_stock_id.id)
+            lids = location_obj.search(cr, uid, [], context=context)
+            for l in location_obj.browse(cr, uid, lids, context=context):  
+                if l.usage=='internal' and l.chained_location_type=='none':
+                    location_ids.append(l.id)
 
         # build the list of ids of children of the location given by id
         if context.get('compute_child',True):
@@ -109,6 +114,7 @@ class product_product(osv.osv):
         date_str = False
         date_values = False
         where = [tuple(location_ids),tuple(location_ids),tuple(ids),tuple(states)]
+        #_logger.error("FIELDS NAMESSSSSSSSS 2: %r", where)
         if from_date and to_date:
             date_str = "date>=%s and date<=%s"
             where.append(tuple([from_date]))
@@ -177,6 +183,7 @@ class product_product(osv.osv):
             amount = uom_obj._compute_qty_obj(cr, uid, uoms_o[prod_uom], amount,
                     uoms_o[context.get('uom', False) or product2uom[prod_id]], context=context)
             res[prod_id] -= amount
+
         return res
 
     def _get_product_reservados_func():
