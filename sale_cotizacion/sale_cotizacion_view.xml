@@ -47,6 +47,7 @@
                                 <field name="partner_contact_id" context="{'default_type':'contact', 'show_address': 1}" options='{"always_reload": True}'/> 
                                 <field name="costo_flete"/>   
                                 <field name="costo_embalaje"/>
+                                <field name="dscto_global"/>
                                                
                             </group>
                             <group>
@@ -71,11 +72,14 @@
                                         <group>
                                             <group> 
                                                 <field name="product_uom_qty"/>
-                                                <field name="price_unit"/> 
+                                                <field name="price_unit" on_change="onchange_dscto_unit(price_unit,dscto_unit,context)"/>
+                                                <field name="dscto_unit" on_change="onchange_dscto_unit(price_unit,dscto_unit,context)"/> 
+                                                <field name="price_unit_dscto" on_change="onchange_price_unit_dscto(parent.costo_flete, parent.costo_embalaje, price_unit_dscto,flete, embalaje, context)"/> 
                                             </group> 
                                             <group>  
-                                                <field name="flete"/> 
-                                                <field name="embalaje"/> 
+                                                <field name="flete" on_change="onchange_price_unit_dscto(parent.costo_flete, parent.costo_embalaje, price_unit_dscto,flete, embalaje, context)"/> 
+                                                <field name="embalaje" on_change="onchange_price_unit_dscto(parent.costo_flete, parent.costo_embalaje, price_unit_dscto,flete, embalaje, context)"/> 
+                                                <field name="price_unit_venta"/> 
                                                 <field name="price_subtotal"/>
                                             </group> 
                                         </group>                                
@@ -85,9 +89,12 @@
                                         <field name="product_id" on_change="onchange_product_id(product_id, product_uom_qty, name,context)"/>
                                         <field name="name"/>  
                                         <field name="product_uom_qty"/>  
-                                        <field name="price_unit"/> 
+                                        <field name="price_unit" on_change="onchange_dscto_unit(price_unit,dscto_unit,context)"/>
+                                        <field name="dscto_unit" on_change="onchange_dscto_unit(price_unit,dscto_unit,context)"/> 
+                                        <field name="price_unit_dscto"/> 
                                         <field name="flete"/> 
-                                        <field name="embalaje"/>                                     
+                                        <field name="embalaje"/>   
+                                        <field name="price_unit_venta"/>                              
                                         <field name="price_subtotal"/>                              
                                     </tree>
                                 </field>
@@ -97,6 +104,12 @@
                                         <button name="button_dummy"  string="(update)" type="object" class="oe_edit_only oe_link"/>
                                     </div>
                                     <field name="total" nolabel="1" class="oe_subtotal_footer_separator" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+
+                                    <div class="oe_subtotal_footer_separator oe_inline">
+                                        <label for="total_dscto_global"/>
+                                    </div>
+                                    <field name="total_dscto_global" nolabel="1" class="oe_subtotal_footer_separator" widget='monetary' options="{'currency_field': 'currency_id'}" />
+
                                     <div class="oe_subtotal_footer_separator oe_inline">
                                         <label for="total_dolar" string="Total en Dolares ($)" />
                                     </div>
