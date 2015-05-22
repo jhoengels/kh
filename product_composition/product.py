@@ -3,7 +3,7 @@
 ##############################################################################
 #
 # OpenERP, Open Source Management Solution
-# Copyright (c) 2014 KIDDYS HOUSE SAC. (http://kiddyshouse.com).
+# Copyright (c) 2015 S&C. (http://salazarcarlos.com).
 #
 # WARNING: This program as such is intended to be used by professional
 # programmers who take the whole responsability of assessing all potential
