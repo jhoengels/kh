@@ -49,6 +49,16 @@ class sale_cotizacion(osv.osv):
                 val+= line.price_subtotal           
             res[order.id] = val
         return res
+    def _amount_total_dscto_blobal(self, cr, uid, ids, name, args, context=None):
+        res = {}
+        for order in self.browse(cr, uid, ids, context=context):
+            #res[order.id] = {'i_total': 0}
+            val=0.0
+            #for line in order.cotizacion_line:  
+                #_logger.error("COTIZACION 2---: %r", line.price_subtotal )              
+            #    val+= line.price_subtotal  
+            res[order.id] = order.total * (1 - order.dscto_global /100.0)
+        return res
 
     def _amount_total_dolar(self, cr, uid, ids, name, args, context=None):
         res = {}
@@ -64,7 +74,6 @@ class sale_cotizacion(osv.osv):
         'cotizacion_line': fields.one2many('sale.cotizacion.line', 'cotizacion_id', 'Lineas Cotizacion',),
         'order_ids': fields.one2many('sale.order', 'cotizacion_id', 'Order relacionados', readonly=False, ),
         'note': fields.text('Terminos y condiciones'),
-        'total': fields.function(_amount_total, string='Total', digits_compute= dp.get_precision('Account'), method=True, type='float'),
         'shop_id': fields.many2one('sale.shop', 'Tienda', required=True, ),
 
         'partner_shipping_id': fields.many2one('res.partner', 'Direccion de entrega', ),
@@ -80,8 +89,14 @@ class sale_cotizacion(osv.osv):
         'tipo_entrega': fields.selection([('dentro_ciudad','Dentro de Ciudad'),('recojo_agencia','Recojo en Agencia'),('recojo_tienda','Recojo en Tienda')],'Tipo Entrega'),
         'tipo_cambio': fields.float('Tipo de Cambio', digits_compute= dp.get_precision('Product Price'),),     
         'total_dolar': fields.function(_amount_total_dolar, string='Total Dolar', digits_compute= dp.get_precision('Account'), method=True, type='float'),
-        'costo_flete': fields.float('Costo de Flete', digits_compute= dp.get_precision('Product Price'),),
-        'costo_embalaje': fields.float('Costo de embalaje', digits_compute= dp.get_precision('Product Price'),),
+        'costo_flete': fields.float('Costo de Flete(S/.)', digits_compute= dp.get_precision('Product Price'),),
+        'costo_embalaje': fields.float('Costo de embalaje(S/.)', digits_compute= dp.get_precision('Product Price'),),
+
+        'dscto_global': fields.float('Dscto global(%)', digits_compute= dp.get_precision('Discount'),),
+        'total': fields.function(_amount_total, string='Total', digits_compute= dp.get_precision('Account'), method=True, type='float'),        
+        'total_dscto_global': fields.function(_amount_total_dscto_blobal, string='Total con Dscto', digits_compute= dp.get_precision('Account'), method=True, type='float'),
+
+
         }
         
     _defaults = {
@@ -90,6 +105,7 @@ class sale_cotizacion(osv.osv):
         'name': lambda obj, cr, uid, context: '/',
         'tipo_cambio': 1.0,
         }
+    _order='date_order desc'
 
     def create(self, cr, uid, vals, context=None):
         """Rewrite Create method.
@@ -226,14 +242,15 @@ class sale_cotizacion(osv.osv):
 class sale_cotizacion_line(osv.osv):
     _name = 'sale.cotizacion.line'
 
-    def _amount_line(self, cr, uid, ids, name, args, context=None):
+    def _price_subtotal(self, cr, uid, ids, name, args, context=None):
         res = dict([(i, {}) for i in ids])
         for line in self.browse(cr, uid, ids, context=context):
-            #_logger.error("COTIZACION 1---: %r", line.price_unit)
-            price = (line.price_unit + line.flete*line.cotizacion_id.costo_flete/100 + line.embalaje*line.cotizacion_id.costo_embalaje/100)*line.product_uom_qty
+            
+            price = (line.price_unit*(1 - line.dscto_unit/100.0)  + line.flete*line.cotizacion_id.costo_flete/100.0 + line.embalaje*line.cotizacion_id.costo_embalaje/100.0)*line.product_uom_qty
+            #price = line.price_unit_venta * line.product_uom_qty
+            _logger.error("SUB TOTALLL 1---: %r", price)
             res[line.id] = price
         return res
-
 
     def onchange_product_id(self, cr, uid, ids, product_id, qty=0, name='', context=None):
         context = context or {}
@@ -248,20 +265,30 @@ class sale_cotizacion_line(osv.osv):
         return {'value': result }
 
 
+
     _columns = {
         'cotizacion_id': fields.many2one('sale.cotizacion', 'Cotizacion de referencia', ondelete='cascade',),
         'product_id': fields.many2one('product.product', 'Producto', domain=[('sale_ok', '=', True)],),
         'descripcion_sale_id': fields.many2one('product.descripcion', string="Descripciones"),
         'name': fields.text('Descripcion', required=True, readonly=False,),
+
+        'product_uom_qty': fields.float('Cant.', digits_compute= dp.get_precision('Product UoS'), required=True, readonly=False,),
+        'price_unit': fields.float('Precio U.', required=True, digits_compute= dp.get_precision('Product Price'), readonly=False,),
+
+        'dscto_unit': fields.float('Dscto Unit(%)', digits_compute= dp.get_precision('Discount'),),
+        'price_unit_dscto': fields.float('P.U. Dscto.', digits_compute= dp.get_precision('Product Price'), readonly=False,),
+
         'flete': fields.float('Flete(%)', digits_compute= dp.get_precision('Discount'), ),
         'embalaje': fields.float('Embalaje(%)', digits_compute= dp.get_precision('Discount'), ),
-        'price_unit': fields.float('Precio Unit', required=True, digits_compute= dp.get_precision('Product Price'), readonly=False,),
-        'product_uom_qty': fields.float('Cantidad', digits_compute= dp.get_precision('Product UoS'), required=True, readonly=False,),
-        'price_subtotal': fields.function(_amount_line, string='Subtotal', digits_compute= dp.get_precision('Account'), store=True),
+                
+        #'price_unit_venta': fields.function(_price_unit_venta,string='P.U. Venta', required=True, digits_compute= dp.get_precision('Product Price'), store=True),
+        'price_unit_venta': fields.float(string='P.U. Venta', required=True, digits_compute= dp.get_precision('Product Price') ),
+        'price_subtotal': fields.function(_price_subtotal, string='Subtotal', digits_compute= dp.get_precision('Account'), store=False),
        } 
     _defaults = {
         'product_uom_qty': 1.0,
         'price_unit': 0.0,
+        'dscto_unit': 0.0,
         }
     
     def onchange_descripcion(self,cr,uid,ids,descripcion_sale_id,product_id,name='',context=None):
@@ -271,6 +298,18 @@ class sale_cotizacion_line(osv.osv):
             return {'value': {'name': prod}}
         product = self.pool.get('product.product').browse(cr, uid, product_id, context)
         return {'value': {'name': product.name }}
+
+    def onchange_dscto_unit(self, cr, uid, ids, price_unit, dscto_unit, context=None):        
+        value = {}
+        value['price_unit_dscto'] = price_unit*(1 - dscto_unit/100.0)
+        #_logger.error("COTIZACION 1---: %r", dscto_unit/100.0)
+        return {'value': value}
+
+    def onchange_price_unit_dscto(self, cr, uid, ids, costo_flete, costo_embalaje, price_unit_dscto, flete, embalaje, context=None):        
+        value = {}
+        value['price_unit_venta'] = price_unit_dscto + flete*costo_flete/100.0 + embalaje*costo_embalaje/100.0
+        #_logger.error("COTIZACION 1---: %r", costo_flete)
+        return {'value': value}
 
 
 class sale_order(osv.osv):
