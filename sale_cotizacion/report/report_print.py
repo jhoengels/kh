@@ -56,5 +56,29 @@ report_sxw.report_sxw(
     parser=sale_cotizacion_print,
     header="external"
 )
+
+report_sxw.report_sxw(
+    'report.sale.cotizacion.print.sin.dscto.product',
+    'sale.cotizacion',
+    'addons/sale_cotizacion/report/report_print_sin_dscto_producto.rml',
+    parser=sale_cotizacion_print,
+    header="external"
+)
+
+report_sxw.report_sxw(
+    'report.sale.cotizacion.print.con.dscto.global',
+    'sale.cotizacion',
+    'addons/sale_cotizacion/report/report_print_con_dscto_global.rml',
+    parser=sale_cotizacion_print,
+    header="external"
+)
+
+
+
+
+
+
+
+
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
 
