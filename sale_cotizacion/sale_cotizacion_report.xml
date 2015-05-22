@@ -8,7 +8,27 @@
                 model="sale.cotizacion"
                 name="sale.cotizacion.print"
                 rml="sale_cotizacion/report/report_print.rml" 
-                string="Cotizacion"
+                string="Cotizacion con dscto por Producto"
                 multi="False"/>
+
+                <!-- para impresiones cotizacion corporativo -->
+        <report
+                auto="False"
+                id="sale_cotizacion_print_sin_dscto_product"
+                model="sale.cotizacion"
+                name="sale.cotizacion.print.sin.dscto.product"
+                rml="sale_cotizacion/report/report_print_sin_dscto_producto.rml" 
+                string="Cotizacion sin dscto por Producto"
+                multi="False"/>
+
+        <report
+                auto="False"
+                id="sale_cotizacion_print_con_dscto_global"
+                model="sale.cotizacion"
+                name="sale.cotizacion.print.con.dscto.global"
+                rml="sale_cotizacion/report/report_print_con_dscto_global.rml" 
+                string="Cotizacion con dscto global"
+                multi="False"/>
+
 	</data>
 </openerp>
