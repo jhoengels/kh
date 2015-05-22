@@ -9,8 +9,8 @@
 			<field name="arch" type="xml">
 				<field name="partner_id" position="after">
 					<newline/>
-					<field name="location_id" on_change="onchange_location(location_id,context)" domain="[('usage','=','supplier')]" required="1"/>
-					<field name="location_dest_id" on_change="onchange_location_dest(location_dest_id,context)" domain="[('usage','=','internal'),('chained_location_type','=','none')]" required="1"/>
+					<field name="location_id" on_change="onchange_location(location_id,context)" domain="[('usage','=','supplier')]" required="1"  options="{'limit': 10, 'create': false, 'create_edit': false}"/>
+					<field name="location_dest_id" on_change="onchange_location_dest(location_dest_id,context)" domain="[('usage','=','internal'),('chained_location_type','=','none')]" required="1"  options="{'limit': 10, 'create': false, 'create_edit': false}"/>
 				</field>
 				<field name="move_lines" position="attributes">
 					<attribute name="context">{'address_in_id':partner_id, 'picking_type': type, 'picking_id': active_id, 'location_id': location_id, 'location_dest_id': location_dest_id}</attribute>
@@ -25,8 +25,8 @@
 			<field name="arch" type="xml">
 				<field name="partner_id" position="after">
 					<newline/>
-					<field name="location_id" on_change="onchange_location(location_id,context)" domain="[('usage','=','internal'),('chained_location_type','=','none')]" required="1"/>
-					<field name="location_dest_id" on_change="onchange_location_dest(location_dest_id,context)" domain="[('usage','=','customer')]" required="1"/>
+					<field name="location_id" on_change="onchange_location(location_id,context)" domain="[('usage','=','internal'),('chained_location_type','=','none')]" required="1"  options="{'limit': 10, 'create': false, 'create_edit': false}"/>
+					<field name="location_dest_id" on_change="onchange_location_dest(location_dest_id,context)" domain="[('usage','=','customer')]" required="1"  options="{'limit': 10, 'create': false, 'create_edit': false}"/>
 				</field>
 				<field name="move_lines" position="attributes">
 					<attribute name="context">{'address_out_id':partner_id, 'picking_type': type, 'picking_id': active_id, 'location_id': location_id, 'location_dest_id': location_dest_id}</attribute>
@@ -41,8 +41,8 @@
             <field name="arch" type="xml">
 				<field name="partner_id" position="after">
 					<newline/>
-					<field name="location_id" on_change="onchange_location(location_id,context)" domain="[('usage','=','internal'),('chained_location_type','=','none')]" required="1" />
-					<field name="location_dest_id" on_change="onchange_location_dest(location_dest_id,context)" domain="['|',('usage','=','internal'),('usage','=','transit'),'|',('chained_location_type','=','none'),('chained_location_type','=','fixed')]" required="1"/>
+					<field name="location_id" on_change="onchange_location(location_id,context)" domain="[('usage','=','internal'),('chained_location_type','=','none')]" required="1"  options="{'limit': 10, 'create': false, 'create_edit': false}"/>
+					<field name="location_dest_id" on_change="onchange_location_dest(location_dest_id,context)" domain="['|',('usage','=','internal'),('usage','=','transit'),'|',('chained_location_type','=','none'),('chained_location_type','=','fixed')]" required="1"  options="{'limit': 10, 'create': false, 'create_edit': false}"/>
 				</field>
 				<field name="move_lines" position="attributes">
 					<attribute name="context">{'address_in_id':partner_id, 'picking_id': active_id, 'location_id': location_id, 'location_dest_id': location_dest_id}</attribute>
