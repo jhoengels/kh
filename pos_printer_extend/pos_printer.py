@@ -92,7 +92,7 @@ class pos_order(osv.osv):
                     'origin': order.name,
                     'partner_id': addr.get('delivery',False),
                     #'type': 'in' if order.devolucion else 'out',
-                    'type': 'out', 
+                    'type': 'out',                
                     'company_id': order.company_id.id,
                     'move_type': 'direct',
                     'note': order.note or "",
@@ -122,7 +122,7 @@ class pos_order(osv.osv):
                         'state': 'draft',
                         'location_id': location_id if line.qty >= 0 else destination_id,
                         'location_dest_id': destination_id if line.qty >= 0 else location_id,
-                        'date_expected': order.fecha_expected,#PARA ESPECIFICAR UNA FEHCA DE ENTREGA EN EL ALMACEN
+                        'date_expected': order.fecha_expected or order.date_order,#PARA ESPECIFICAR UNA FEHCA DE ENTREGA EN EL ALMACEN
                     }, context=context)
                 wf_service = netsvc.LocalService("workflow")
                 wf_service.trg_validate(uid, 'stock.picking', picking_id, 'button_confirm', cr)
