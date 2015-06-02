@@ -15,7 +15,7 @@
                     <button name="pos_print_report" string="imprimir Ticket" type="object" states="paid,done,invoiced" groups="pos_extend.group_pos_caja" context="{'pos_session_id' : session_id}" icon="STOCK_PRINT"/>
 
                     <button name="cancel_payment" states="paid,done,invoiced" string="Anular pagos" icon="gtk-cancel" groups="pos_extend.group_pos_caja" type="object"/>
-                    <button name="cancel_order" states="paid,done,invoiced" string="Anular Ticket" icon="gtk-cancel" groups="pos_extend.group_pos_caja" type="object"/>
+                    <button name="cancel_order" states="draft,paid,done,invoiced" string="Anular Ticket" icon="gtk-cancel" groups="point_of_sale.group_pos_user" type="object"/>
                 </xpath>
 
                 <!--<xpath expr="//button[@name='refund']" position="after"> -->
@@ -24,7 +24,7 @@
                 </xpath>
 
                 <field name="partner_id" position="replace">
-                    <field name="partner_id" on_change="onchange_partner_id(partner_id, context)" context="{'search_default_customer':1, 'show_address': 1}" options="{'always_reload': True,'limit': 10, 'create': false, 'create_edit': True}" attrs="{'readonly': [('state','!=','draft')]}"  filter_domain="[('ref','ilike',self)]"  domain="[('customer','=',1)]" />
+                    <field name="partner_id" on_change="onchange_partner_id(partner_id, context)" context="{'search_default_customer':1, 'show_address': 1}" options="{'always_reload': True,'limit': 10, 'create': false, 'create_edit': True}" attrs="{'readonly': [('state','!=','draft')]}"  filter_domain="[('ref','ilike',self)]"  domain="[('customer','=',1)]" required="1" />
 
                 </field>
                 <field name="session_id" position="after">
@@ -64,20 +64,24 @@
                     <field name="note" attrs="{'readonly': [('state','!=','draft')]}"/>
                 </field>
 
+                <field name="amount_tax" position="before" >
+                    <field name="amount_subtotal" />
+                </field>
+
                 <!-- PARA PEDIDDOS DE ALMACEN-->
                 <field name="product_id" position="replace">
                     <field name="product_id" on_change="onchange_product_id(parent.pricelist_id,product_id,qty, parent.partner_id, parent.almacendespacho_id, parent.session_id)" options="{'limit': 10, 'create': false, 'create_edit': false}"/>
                 </field>
                 <field name="qty" position="replace">
-                   <field name="qty" on_change="onchange_qty(product_id, discount, qty, price_unit, parent.almacendespacho_id, context)"/>
+                   <field name="qty" on_change="onchange_qty(product_id, discount, qty, price_unit, parent.almacendespacho_id, parent.session_id,context)"/>
                 </field>
 
                 <field name="price_unit" position="replace">
-                    <field name="price_unit" on_change="onchange_qty(product_id, discount, qty, price_unit, parent.almacendespacho_id, context)"/>
+                    <field name="price_unit" on_change="onchange_qty(product_id, discount, qty, price_unit, parent.almacendespacho_id, parent.session_id,context)"/>
                 </field>
 
                 <field name="discount" position="replace" >
-                    <field name="discount"  on_change="onchange_qty(product_id, discount, qty, price_unit, parent.almacendespacho_id, context)"/>
+                    <field name="discount"  on_change="onchange_qty(product_id, discount, qty, price_unit, parent.almacendespacho_id, parent.session_id,context)"/>
                 </field>
                 <!-- FIN -->
 	        </field>
