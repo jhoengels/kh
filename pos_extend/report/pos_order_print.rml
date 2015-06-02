@@ -122,7 +122,7 @@
           <para style="terp_default_Right_9">[[o.state=='cancel' and o.statement_ids and '-' or '']][['%.f' % line.qty ]]</para>
         </td>
         <td>
-          <para style="terp_default_Right_9">[[o.state=='cancel' and o.statement_ids and '-' or '']][[ formatLang(line.price_unit) ]] </para>
+          <para style="terp_default_Right_9">[[o.state=='cancel' and o.statement_ids and '-' or '']][[ formatLang(line.price_unit - line.price_unit*line.discount/100.0) ]] </para>
         </td>
         <td>
           <para style="terp_default_Right_9">[[o.state=='cancel' and o.statement_ids and '-' or '']][[ formatLang(net(line.id)) ]]</para>
@@ -133,10 +133,10 @@
     <blockTable colWidths="111.0,74.0" style="Table2">
       <tr>
         <td>
-          <para style="P61">VALOR DE VENTA:</para>
+          <para style="P61">SUB TOTAL:</para>
         </td>
         <td>
-          <para style="terp_default_Right_9">[[o.state=='cancel' and o.statement_ids and '-' or '']][[ formatLang(tbruto(o.id), currency_obj=company.currency_id) ]]</para>
+          <para style="terp_default_Right_9">[[o.state=='cancel' and o.statement_ids and '-' or '']][[ formatLang(o.amount_total-o.amount_tax-exo(o.id)+disc(o.id), dp='2', currency_obj=company.currency_id) ]]</para>
         </td>
       </tr>
 
@@ -145,35 +145,35 @@
           <para style="P61">DESCTO. TOTAL:</para>
         </td>
         <td>
-          <para style="terp_default_Right_9">[[o.state=='cancel' and o.statement_ids and '-' or '']][[ formatLang(disc(o.id), currency_obj=company.currency_id) ]]</para>
+          <para style="terp_default_Right_9">[[o.state=='cancel' and o.statement_ids and '-' or '']][[ formatLang(disc(o.id), dp='2', currency_obj=company.currency_id) ]]</para>
         </td>
       </tr>
 
       <tr>
         <td>
-          <para style="P61">INAFECTO.:</para>
+          <para style="P61">EXONERADO:</para>
         </td>
         <td>
-          <para style="terp_default_Right_9">[[o.state=='cancel' and o.statement_ids and '-' or '']][[formatLang(exo(o.id), currency_obj=company.currency_id)]]</para>
+          <para style="terp_default_Right_9">[[o.state=='cancel' and o.statement_ids and '-' or '']][[formatLang(exo(o.id), dp='2', currency_obj=company.currency_id)]]</para>
         </td>
       </tr>
 
       <tr>
         <td>
-          <para style="P61">I.G.V.:</para>
+          <para style="P61">I.G.V.(18%):</para>
         </td>
         <td>
-          <para style="terp_default_Right_9">[[o.state=='cancel' and o.statement_ids and '-' or '']][[formatLang(o.amount_tax, currency_obj=company.currency_id)]]</para>
+          <para style="terp_default_Right_9">[[o.state=='cancel' and o.statement_ids and '-' or '']][[formatLang(o.amount_tax, dp='2', currency_obj=company.currency_id)]]</para>
         </td>
       </tr>
     </blockTable>
     <blockTable colWidths="111.0,74.0" style="Table4">
       <tr>
         <td>
-          <para style="P6">TOTAL A PAGAR:</para>
+          <para style="P6">IMPORTE TOTAL:</para>
         </td>
         <td>
-          <para style="terp_default_Bold_9_Right2">[[o.state=='cancel' and o.statement_ids and '-' or '']][[formatLang(o.amount_total, currency_obj=company.currency_id)]]</para>
+          <para style="terp_default_Bold_9_Right2">[[o.state=='cancel' and o.statement_ids and '-' or '']][[formatLang(o.amount_total, dp='2', currency_obj=company.currency_id)]]</para>
         </td>
       </tr>
     </blockTable>
