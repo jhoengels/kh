@@ -76,18 +76,21 @@
       <lineStyle kind="LINEBEFORE" colorName="#000000" start="5,0" stop="5,-1"/>
       <lineStyle kind="LINEABOVE" colorName="#000000" start="5,0" stop="5,0"/>
       <lineStyle kind="LINEBELOW" colorName="#000000" start="5,-1" stop="5,-1"/>
+
       <lineStyle kind="LINEBEFORE" colorName="#000000" start="6,0" stop="6,-1"/>
       <lineStyle kind="LINEABOVE" colorName="#000000" start="6,0" stop="6,0"/>
       <lineStyle kind="LINEBELOW" colorName="#000000" start="6,-1" stop="6,-1"/>
+
       <lineStyle kind="LINEBEFORE" colorName="#000000" start="7,0" stop="7,-1"/>
-      <lineStyle kind="LINEAFTER" colorName="#000000" start="7,0" stop="7,-1"/>
-      <lineStyle kind="LINEABOVE" colorName="#000000" start="7,0" stop="7,0"/>
+      <lineStyle kind="LINEAFTER" colorName="#000000" start="7,0" stop="7,0"/>
+      <lineStyle kind="LINEABOVE" colorName="#000000" start="7,-1" stop="7,-1"/>
+      <lineStyle kind="LINEBELOW" colorName="#000000" start="7,-1" stop="7,-1"/>
 
       <lineStyle kind="LINEBEFORE" colorName="#000000" start="8,0" stop="8,-1"/>
-      <lineStyle kind="LINEAFTER" colorName="#000000" start="8,0" stop="8,-1"/>
-      <lineStyle kind="LINEABOVE" colorName="#000000" start="8,0" stop="8,0"/>
+      <lineStyle kind="LINEAFTER" colorName="#000000" start="8,0" stop="8,0"/>
+      <lineStyle kind="LINEABOVE" colorName="#000000" start="8,-1" stop="8,-1"/>
 
-      <lineStyle kind="LINEBELOW" colorName="#000000" start="8,-1" stop="8,-1"/>
+      <lineStyle kind="LINEBELOW" colorName="#000000" start="8,0" stop="8,-1"/>
     </blockTableStyle>
 
 
@@ -202,7 +205,7 @@
   <story>
   <pto>
   <pto_header>
-    <blockTable colWidths="38.0,41.0,105.0,105.0,98.0,38.0,48.0,66.0" style="Tabla3">
+    <blockTable colWidths="38.0,41.0,88.0,88.0,98.0,38.0,38.0,48.0,66.0" style="Tabla3">
       <tr>
         <td>
           <para style="P61">ITEMS</para>
@@ -214,7 +217,7 @@
           <para style="P61">PRODUCTO</para>
         </td>
         <td>
-          <para style="P61">CANT/PZS./KITS/JGOS</para>
+          <para style="P61">CANT/PZS./ KITS/JGOS</para>
         </td>
         <td>
           <para style="P61">IMAGEM</para>
@@ -222,6 +225,11 @@
         <td>
           <para style="P61">CANT.</para>
         </td>
+
+        <td>
+          <para style="P61">DSCTO.</para>
+        </td>
+
         <td>
           <para style="P61">P. UNIT</para>
         </td>
@@ -385,15 +393,15 @@
     <blockTable colWidths="333.0,206.0" style="Tabla11">
       <tr>
         <td>
-          <para style="P5"><b>Forma de pago: </b> [[ o.forma_pago or '' ]]</para>
-          <para style="P5"><b>Días Crédito: </b> [[ o.payment_term.name or '' ]]</para>
+          <para style="P5"><b>Forma de pago: </b> [[ o.forma_pago or removeParentNode('para') ]]</para>
+          <para style="P5"><b>Días Crédito: </b> [[ o.payment_term.name or removeParentNode('para') ]]</para>
           <para style="P5"><b>Moneda: </b></para>
           <para style="P5"><b>Tipo Cambio: </b> </para>
-          <para style="P5"><b>Impuesto 18%: </b>[[ o.igv == 'con_igv' and 'Incluye IGV' or o.igv == 'sin_iv' and 'No incluye IGV' or '' ]]</para>
-          <para style="P5"><b>Flete: </b> [[ o.flete == 'con_flete' and 'Con Flete' or o.flete == 'sin_flete' and 'No incluye flete' or '' ]]</para>
-          <para style="P5"><b>Embalaje: </b> [[ o.embalaje == 'con_embalaje' and 'Incluido embalaje' or o.embalaje == 'sin_embalaje' and 'No incluye embalaje' or '' ]]</para>
-          <para style="P5"><b>Fecha Entrega: </b> [[ o.fecha_expected or '' ]]</para>
-          <para style="P5"><b>Tipo de entrega: </b> [[ o.tipo_entrega or '' ]]</para>
+          <para style="P5"><b>Impuesto 18%: </b>[[ o.igv == 'con_igv' and 'INCLUIDO IGV' or o.igv == 'sin_iv' and 'NO INCLUYE IGV' or '' ]]</para>
+          <para style="P5"><b>Flete: </b> [[ o.flete == 'con_flete' and 'INCLUIDO FLETE' or o.flete == 'sin_flete' and 'NO INCLUYE FLETE' or '' ]]</para>
+          <para style="P5"><b>Embalaje: </b> [[ o.embalaje == 'con_embalaje' and 'INCLUIDO EMBALAJE' or o.embalaje == 'sin_embalaje' and 'NO INCLUYE EMBALAJE' or '' ]]</para>
+          <para style="P5"><b>Fecha Entrega: </b> [[ formatLang(o.fecha_expected,date=True) or removeParentNode('para') ]]</para>
+          <para style="P5"><b>Tipo de entrega: </b> [[ o.tipo_entrega =='dentro_ciudad' and 'DENTRO DE CIUDAD' or o.tipo_entrega =='recojo_agencia' and 'RECOJO EN AGENCIA' or o.tipo_entrega =='recojo_tienda' and 'RECOJO EN TIENDA' or '' ]]</para>
           <para style="P5"><b>Ciudad de Entrega: </b>[[ o.partner_id.state_id.name or '' ]]</para>
           <para style="P5"><b>Datos Destinatario: </b> </para>
            <para style="P6"><font color="white">- </font></para>

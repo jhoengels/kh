@@ -264,8 +264,6 @@ class sale_cotizacion_line(osv.osv):
 
         return {'value': result }
 
-
-
     _columns = {
         'cotizacion_id': fields.many2one('sale.cotizacion', 'Cotizacion de referencia', ondelete='cascade',),
         'product_id': fields.many2one('product.product', 'Producto', domain=[('sale_ok', '=', True)],),
