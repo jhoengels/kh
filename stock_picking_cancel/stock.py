@@ -42,11 +42,13 @@ class stock_picking(osv.Model):
         date = None
         sale= None
         pick_name=None
+        pick_type =  None
         for pick in self.browse(cr, uid, ids, context=context):
             date=pick.date
             sale = pick.sale_id
             pick_name = pick.name
-        if not sale: 
+            pick_type = pick.type
+        if not sale and pick_type == 'internal': 
             uid=1
             pick_ids=picking_obj.search(cr, uid,[('date','=',date),('name','=',pick_name),], order='date')          
             #_logger.error("stock IDDDD----: %r", pick_ids)
