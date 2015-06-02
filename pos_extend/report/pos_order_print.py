@@ -54,7 +54,7 @@ class pos_order_print(report_sxw.rml_parse):
         })
 
     def netamount(self, order_line_id):
-        sql = 'select (qty*price_unit) as net_price from pos_order_line where id = %s'
+        sql = 'select (qty*price_unit-qty*price_unit*discount/100.0) as net_price from pos_order_line where id = %s'
         self.cr.execute(sql, (order_line_id,))
         res = self.cr.fetchone()
         #_logger.error("ORDER ID 1: %r", res)
