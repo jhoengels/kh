@@ -10,7 +10,7 @@
                     <field name="journal_id" position="replace" />
                     
                     <field name="amount" position="before">
-                        <field name="journal_id" domain="[('journal_user', '=', True)]"  />
+                        <field name="journal_id" domain="[('journal_user', '=', True)]" widget="selection" />
                     </field>   
                      
                     <field name="payment_name" position="after">
