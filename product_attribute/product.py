@@ -36,4 +36,6 @@ class product_product(osv.osv):
     _inherit = 'product.product'
     _columns = {
         'procedencia': fields.selection([('nac','Nacional'),('import','Importado')],'Procedencia',required=False,),
+        'categ_edad': fields.selection([('01','0 A 5 MESES'),('02','6 A 11 MESES'),('03','1 AÑO'),('04','2 AÑOS'),('05','3 AÑOS'),('06','4 Y 5 AÑOS'),],'Categoria Edad',required=False,),
+        'categ_area': fields.selection([('01','AREA COGNITIVA'),('02','AREA DE LENGUAJE'),('03','AREA DE MOTORA GRUESA'),('04','AREA DE MOTORA FINA'),('05','AREA SOCIO-EMOCIONAL'),],'Categoria Area',required=False,),
 	}

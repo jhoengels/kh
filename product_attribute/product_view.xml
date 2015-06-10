@@ -11,6 +11,10 @@
                	<field name="type" position="after">
 			        <field name="procedencia" />
 		        </field>
+                <field name="list_price" position="before">
+                    <field name="categ_edad" />
+                    <field name="categ_area" />
+                </field>
             </field>
         </record>
 
