@@ -109,7 +109,7 @@ class pos_order(osv.osv):
                     if line.product_id and line.product_id.type == 'service':
                         continue
                     move_obj.create(cr, uid, {
-                        'name': line.name,
+                        'name': line.descripcion,
                         'product_uom': line.product_id.uom_id.id,
                         'product_uos': line.product_id.uom_id.id,
                         'picking_id': picking_id,
@@ -158,7 +158,7 @@ class pos_order(osv.osv):
                     if line.product_id and line.product_id.type == 'service':
                         continue
                     move_obj.create(cr, uid, {
-                        'name': line.name,
+                        'name': line.descripcion,
                         'product_uom': line.product_id.uom_id.id,
                         'product_uos': line.product_id.uom_id.id,
                         'picking_id': picking_id,
