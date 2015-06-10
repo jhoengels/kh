@@ -45,7 +45,7 @@
       <paraStyle name="all" alignment="justify"/>
     </initialize>
     <paraStyle name="P1" fontName="Helvetica" fontSize="6.0" leading="7" alignment="LEFT"/>
-    <paraStyle name="P2" fontName="Helvetica" fontSize="6.0" leading="5"/>
+    <paraStyle name="P2" fontName="Helvetica" fontSize="6.0" leading="7"/>
     <paraStyle name="P3" fontName="Helvetica" fontSize="6.0" leading="9" alignment="LEFT"/>
     <paraStyle name="P31" fontName="Helvetica" fontSize="7.0" leading="9" alignment="LEFT"/>
     <paraStyle name="P8" fontName="Helvetica" fontSize="6.0" leading="7" alignment="RIGHT"/>
@@ -113,7 +113,7 @@
       <tr>
         <para style="P1">[[ repeatIn(o.lines,'line') ]]</para>
         <td>          
-          <para style="terp_default_9b">[[ line.product_id.name ]]</para>
+          <para style="terp_default_9b">[[ line.descripcion ]]</para>
           <para style="terp_default_Right_9">
             <font face="Helvetica">Con [[ line and line.discount == 0.0 and removeParentNode('font') ]] [[ '%.f' % line.discount ]]% descuent.</font>
           </para>
@@ -184,8 +184,8 @@
           <para style="P5">FORMA DE PAGO</para>
         </td>
         <td>
-          <para style="P1">
-            <font color="white"> </font>
+          <para style="P5">
+            <font color="white">REF.</font>
           </para>
         </td>
         <td>
@@ -195,15 +195,20 @@
       <tr>
         <td>
           <para>[[ repeatIn(get_journal_amt(o),'d') ]]</para>
-          <para style="P2">[[ d['name'] ]]</para>
+          <para style="P2">[[ d['name'] ]]</para>          
+          <!--
+          <para style="P1">[[ repeatIn(o.statement_ids,'p') ]]</para>
+          <para style="P2">[[ p.journal_id.name or '' ]]</para>
+          <para style="P2">REF. PAGO [[ p.ref_card or '' ]]</para> -->
         </td>
         <td>
           <para style="P2">
-            <font color="white"> </font>
+            [[ d['ref_card'] or '' ]]
           </para>
         </td>
         <td>
-          <para style="P2">[[ formatLang(d['amt'] or 0, currency_obj=company.currency_id) ]]</para>
+          <para style="terp_default_Right_9">[[ formatLang(d['amt'] or 0, currency_obj=company.currency_id) ]]</para>
+          <!-- <para style="terp_default_Right_9">[[ p.amount or '' ]]</para> -->
         </td>
       </tr>
     </blockTable>
