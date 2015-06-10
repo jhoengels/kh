@@ -11,5 +11,15 @@
             string="Imprimir ticket"
             usage="default"
              />
+
+            <report
+            auto="False"
+            id="pos_order_venta_print"
+            model="pos.order"
+            name="pos.order.venta.print.ticket"
+            rml="pos_extend/report/pos_order_venta_print.rml"
+            string="Imprimir orden venta"
+            usage="default"
+             />
    </data>
 </openerp>
