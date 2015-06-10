@@ -139,7 +139,7 @@ class pos_order_print(report_sxw.rml_parse):
 
     def _get_journal_amt(self, order_id):
         data={}
-        sql = """ select aj.name,absl.amount as amt from account_bank_statement as abs
+        sql = """ select aj.name,ref_card,absl.amount as amt from account_bank_statement as abs
                         LEFT JOIN account_bank_statement_line as absl ON abs.id = absl.statement_id
                         LEFT JOIN account_journal as aj ON aj.id = abs.journal_id
                         WHERE absl.pos_statement_id =%d"""%(order_id)
