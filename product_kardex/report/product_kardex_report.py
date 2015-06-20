@@ -159,6 +159,9 @@ class product_kardex_report(report_sxw.rml_parse):
                     res.update({'concept_move': 'TRANFERENCIA ENTRE ALMACENES' })
                 if move.location_id.usage == 'customer' and move.location_dest_id.usage == 'internal':
                     res.update({'concept_move': 'DEVOLUCION DE PRODUCTOS' })
+                #recepcion de muestra
+                if move.location_id.usage == 'muestra' and move.location_dest_id.usage == 'internal':
+                    res.update({'concept_move': 'DEVOLUCION DE PRODUCTOS MUESTRA' })
                 #data.append(res)
 
             if move.location_id.id == locat_id[0] and move.location_dest_id.id != locat_id[0]:
@@ -204,6 +207,10 @@ class product_kardex_report(report_sxw.rml_parse):
                     
                 if move.location_id.usage == 'customer' and move.location_dest_id.usage == 'internal':
                     res.update({'concept_move': 'DEVOLUCION DE PRODUCTOS (INGRESO)' })
+                # envio a muestra
+                if move.location_id.usage == 'internal' and move.location_dest_id.usage == 'muestra':
+                    res.update({'concept_move': 'ENVIO DE PRODUCTOS A MUESTRA' })
+
                 #data.append(res)
             res.update({'move_qty_total_in': move_qty_total_in})
             res.update({'move_qty_total_out': move_qty_total_out})
