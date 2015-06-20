@@ -11,7 +11,7 @@
             string="Imprimir ticket"
             usage="default"
              />
-
+            <!-- Imprime Orden de venta -->
             <report
             auto="False"
             id="pos_order_venta_print"
@@ -21,5 +21,38 @@
             string="Imprimir orden venta"
             usage="default"
              />
+
+            <!-- reporte de ticket factura por sesion-->
+            <report
+            auto="False"
+            id="pos_report_venta"
+            model="pos.session"
+            name="pos.session.venta.factura.print"
+            rml="pos_extend/report/pos_report_fact_venta.rml"
+            string="Ticket Factura"
+            usage="default"
+             />
+             
+            <!-- reporte de detalles de pagos por sesion -->
+            <report
+            auto="False"
+            id="pos_report_pago_venta"
+            model="pos.session"
+            name="pos.session.pago.venta"
+            rml="pos_extend/report/pos_report_pago_venta.rml"
+            string="Reporte de pagos"
+            usage="default"
+             /> 
+            <!-- reporte de ticket boleta por sesion-->
+            <report
+            auto="False"
+            id="pos_report_boleta_venta"
+            model="pos.session"
+            name="pos.session.venta.boleta.print"
+            rml="pos_extend/report/pos_report_bolet_venta.rml"
+            string="Ticket Boleta"
+            usage="default"
+             />         
+
    </data>
 </openerp>
