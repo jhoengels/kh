@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_abastec_gestor,stock.max.min gestor,model_stock_max_min,group_abastec_stock,1,1,1,1
+access_abastec_gestor_line_gestor,stock.max.min.line gestor,model_stock_max_min_line,group_abastec_stock,1,1,1,1
+

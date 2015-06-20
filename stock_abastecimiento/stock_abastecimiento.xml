@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data> 
+        <!-- Stock max y min masivo por almacen -->
+        <record model="ir.ui.view" id="view_stock_max_min_tree">
+            <field name="name">stock.max.min.tree</field>
+            <field name="model">stock.max.min</field>
+            <field name="arch" type="xml">
+                <tree string="Listar de registro" colors="gray:state=='done'" >
+                   <field name="name"/>
+                   <field name="warehouse_id"/>
+                   <field name="date"/>
+                   <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_stock_max_min_form">
+            <field name="name">stock.max.min.form</field>
+            <field name="model">stock.max.min</field>
+            <field name="arch" type="xml">
+            <form string="Nuevo registro" version="7.0">
+                <header> 
+                               
+                  <button name="button_obsoleto" string="Pasar a obsoleto" type="object" states="draft" class="oe_highlight"/>
+                  <button name="button_cancel" string="Anular" type="object"  states="draft" /> 
+                  <button name="button_cancel" string="Anular" type="object" states="done"/>  
+                
+                  <field name="state"  widget="statusbar" statusbar_visible="draft,done,cancel"
+                  statusbar_colors="{&quot;waiting_date&quot;:&quot;blue&quot;}"/>
+                
+                </header> 
+                <sheet>
+                    <div class="oe_right oe_button_box">
+                        <button name="generar_stock_max_min" string="Generar stock" states="draft" type="object"/>
+                    </div>
+
+                    <div class="oe_right oe_button_box">
+                        <button name="importar_producto" string="Importar productos" states="draft" type="object"/>
+                    </div>
+
+                    <div class="oe_title">
+                        <h3> <field name="name" class="oe_inline" readonly='0'/> </h3>
+                    </div>
+                    <group col="12" >
+                        <group colspan="8">
+                            <field name="warehouse_id"/>
+                        </group>
+                        <group colspan="4"> 
+                          <field name="date"/>
+                        </group>
+                    </group>                     
+                    <notebook>
+                        <page  string="Stock Max Min de Productos">
+                            <field name="max_min_line_ids" readonly="0">
+                                <tree string="Components" editable="bottom">
+                                    <field name="product_id"/>
+                                    <field name="stock_min"/>
+                                    <field name="stock_max"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <!--
+                        <page  string="Movimientos">
+                            <field name="move_lines_ids" readonly="0">
+                              <field name="product_id"/>
+                              <field name="product_qty"/>
+                              <field name="location_dest_id"/>
+                            </field>                          
+                        </page>
+                      -->
+                    </notebook>
+                </sheet>      
+            </form>
+            </field> 
+          </record>
+
+        <record model="ir.actions.act_window" id="action_stock_max_min_tree">
+          <field name="name">Stock max min</field>
+          <field name="res_model">stock.max.min</field>
+          <field name="view_type">form</field>
+          <field name="view_mode">tree,form</field>
+        </record>
+
+
+        <menuitem parent="stock.menu_stock_root" id="menu_stock_max_min_vista" sequence="4" name="Gestion abastecimiento"/>
+
+        <menuitem parent="menu_stock_max_min_vista" action="action_stock_max_min_tree" id="menu_stock_max_min" sequence="0" name="Stock max min"/>
+
+
+        <!-- Abastecimiento -->
+        <record model="ir.ui.view" id="view_stock_abastecimiento_tree">
+            <field name="name">stock.abastecimiento.tree</field>
+            <field name="model">stock.abastecimiento</field>
+            <field name="arch" type="xml">
+                <tree string="Listar de registro" colors="gray:state=='done'" >
+                   <field name="name"/>
+                   <field name="warehouse_id"/>
+                   <field name="date"/>
+                   <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_stock_abastecimiento_form">
+            <field name="name">stock.abastecimiento.form</field>
+            <field name="model">stock.abastecimiento</field>
+            <field name="arch" type="xml">
+            <form string="Nuevo registro" version="7.0">
+                <header>                                
+                  <button name="button_obsoleto" string="Pasar a obsoleto" type="object" states="draft" class="oe_highlight"/>
+                  <button name="button_cancel" string="Anular" type="object"  states="draft" /> 
+                  <button name="button_cancel" string="Anular" type="object" states="done"/>                  
+                  <field name="state"  widget="statusbar" statusbar_visible="draft,done,cancel"
+                  statusbar_colors="{&quot;waiting_date&quot;:&quot;blue&quot;}"/>                
+                </header> 
+                <sheet>
+                    <div class="oe_right oe_button_box">
+                        <button name="generar_guia" string="Gererar guia" states="draft" type="object"/>
+                    </div>
+                    <div class="oe_right oe_button_box">
+                      <button name="calcular_abastecimiento" string="Calcular Abastecimiento" states="draft" type="object"/>
+                    </div>
+
+                    <div class="oe_title">
+                        <h2> <field name="name" class="oe_inline" readonly='1'/> </h2>
+                    </div>
+                    <group col="12" >
+                        <group colspan="8">
+                            <field name="warehouse_id"/>
+                            <field name="fecha_abast"/>
+                        </group>
+                        <group colspan="4"> 
+                          <field name="date"/>
+                        </group>
+                    </group>                     
+                    <notebook>
+                        <page  string="Abastecimiento de Productos">
+                            <field name="abastec_line_ids" readonly="0">
+                                <tree string="Components" editable="bottom">
+                                    <field name="product_id"/>
+                                    <field name="product_qty"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <!--
+                        <page  string="Movimientos">
+                            <field name="move_lines_ids" readonly="0">
+                              <field name="product_id"/>
+                              <field name="product_qty"/>
+                              <field name="location_dest_id"/>
+                            </field>                          
+                        </page>
+                        -->
+                    </notebook>
+                </sheet>      
+            </form>
+            </field> 
+        </record>
+
+        <record model="ir.actions.act_window" id="action_stock_abastecimiento_tree">
+          <field name="name">Stock abastecimiento</field>
+          <field name="res_model">stock.abastecimiento</field>
+          <field name="view_type">form</field>
+          <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem parent="menu_stock_max_min_vista" action="action_stock_abastecimiento_tree" id="menu_stock_abastecimiento" sequence="0" name="Abastecimiento"/>      
+
+
+    <!-- Añade el campo sequence al formulario almacen-->
+    <record model="ir.ui.view" id="view_warehouse_sequence_abastc_form">
+          <field name="name">Warehouse.sequence.abastc.form.inherit</field>
+          <field name="model">stock.warehouse</field>
+          <field name="type">form</field>
+          <field name="inherit_id" ref="stock.view_warehouse"/>
+          <field name="arch" type="xml">
+              <field name="partner_id" position="after">                    
+                     <field name="sequence_abastc_id" />                    
+              </field>
+          </field>
+      </record>
+        
+
+
+  </data>
+</openerp>
