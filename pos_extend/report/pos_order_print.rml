@@ -80,7 +80,7 @@
   <story>
     <para style="terp_default_8">[[ repeatIn(objects,'o') ]]</para>
     <para style="terp_header_Centre">[[o.user_id.company_id.name]]</para>
-    <para style="terp_header_Centre">RUC: [[o.user_id.company_id.vat]]</para>
+    <para style="terp_header_Centre">RUC: [[o.user_id.company_id.vat[3:] ]]</para>
     <para style="terp_default_Centre_9">TIENDA: [[ o.shop_id.name ]]</para>
     <para style="terp_default_Centre_9">[[ o.shop_id.shop_address ]] - [[ o.shop_id.state_id.name ]] </para>
     <para style="terp_default_Centre_9">TELEF.: [[ o.shop_id.shop_telef ]]</para>
