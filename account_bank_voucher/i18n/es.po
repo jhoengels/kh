@@ -1,0 +1,103 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+# 	* account_bank_voucher
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 7.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-05-07 21:20+0000\n"
+"PO-Revision-Date: 2015-01-17 18:17-0500\n"
+"Last-Translator: Cubic ERP S.A.C. <info@cubicerp.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+"X-Generator: Poedit 1.5.7\n"
+
+#. module: account_bank_voucher
+#: field:account.voucher,is_bank_voucher:0
+msgid "Bank Voucher"
+msgstr "Banco de comprobantes"
+
+#. module: account_bank_voucher
+#: model:ir.model,name:account_bank_voucher.model_account_bank_statement_line
+msgid "Bank Statement Line"
+msgstr "Línea de extracto bancario"
+
+#. module: account_bank_voucher
+#: view:account.bank.statement:0
+msgid "Import Vouchers"
+msgstr "Importar Comprobantes"
+
+#. module: account_bank_voucher
+#: model:ir.actions.act_window,name:account_bank_voucher.action_voucher_populate_statement
+msgid "Voucher Populate statement"
+msgstr "Rellenar extractos de comprobantes"
+
+#. module: account_bank_voucher
+#: model:ir.model,name:account_bank_voucher.model_account_voucher_populate_statement
+msgid "Account Voucher Populate Statement"
+msgstr "Extracto de cuentas de comprobantes llenados"
+
+#. module: account_bank_voucher
+#: model:ir.model,name:account_bank_voucher.model_account_voucher
+msgid "Accounting Voucher"
+msgstr "Comprobantes contables"
+
+#. module: account_bank_voucher
+#: field:account.voucher.populate.statement,lines:0
+msgid "Vouchers"
+msgstr "Comprobantes"
+
+#. module: account_bank_voucher
+#: view:account.voucher.populate.statement:0
+msgid "Populate Statement:"
+msgstr "Llenar extracto:"
+
+#. module: account_bank_voucher
+#: model:ir.model,name:account_bank_voucher.model_account_bank_statement
+msgid "Bank Statement"
+msgstr "Extracto bancario"
+
+#. module: account_bank_voucher
+#: view:account.voucher.populate.statement:0
+msgid "ADD"
+msgstr "Adicionar"
+
+#. module: account_bank_voucher
+#: view:account.voucher.populate.statement:0
+msgid "Cancel"
+msgstr "Cancelar"
+
+#. module: account_bank_voucher
+#: field:account.voucher,bank_statement_line_ids:0
+msgid "Statement Lines"
+msgstr "Líneas del Extracto"
+
+#. module: account_bank_voucher
+#: view:account.statement.from.invoice.lines:0
+msgid ""
+"[('account_id.type','in',['receivable','payable']),('journal_id.type','in',"
+"['sale','sale_refund','purchase','purchase_refund']),('reconcile_id','=',"
+"False), ('state', '=', 'valid')]"
+msgstr ""
+"[('account_id.type','in',['receivable','payable']),('journal_id.type','in',"
+"['sale','sale_refund','purchase','purchase_refund']),('reconcile_id','=',"
+"False), ('state', '=', 'valid')]"
+
+#. module: account_bank_voucher
+#: view:account.voucher.populate.statement:0
+msgid "or"
+msgstr "o"
+
+#. module: account_bank_voucher
+#: model:ir.model,name:account_bank_voucher.model_account_statement_from_invoice_lines
+msgid "Entries by Statement from Invoices"
+msgstr "Entradas por extracto desde facturas"
+
+#. module: account_bank_voucher
+#: view:account.voucher:0
+msgid "Bank Statements"
+msgstr "Extracto bancario"
