@@ -121,7 +121,16 @@ class pos_order(osv.osv):
                 val2 += line.price_subtotal
             res[order.id] = cur_obj.round(cr, uid, cur, val2)
             
-        return res    
+        return res
+    def _exonerado(self, cr, uid, ids, name, args, context=None):
+        res = {}
+        for order in self.browse(cr, uid, ids, context=context):
+            exo=0.0
+            for line in order.lines:
+                if not line.product_id.taxes_id:
+                    exo += line.price_subtotal_incl
+        res[order.id] = exo
+        return res   
 
     _columns = {
         'es_factura': fields.boolean('Facturada', states={'draft': [('readonly', False)],} ),
@@ -130,8 +139,8 @@ class pos_order(osv.osv):
         #'devolucion': fields.char('Devolucion de',size=64, states={'draft': [('readonly', False)],} ),
         'fecha_expected': fields.datetime('Fecha entrega al cliente', required=False, readonly=False, select=True, states={'draft': [('readonly', False)]}),
         'partner_shipping_id': fields.many2one('res.partner', 'Direccion de entrega', states={'draft': [('readonly', False)],} ),
-
         'amount_subtotal': fields.function(_amount_subtotal, digits_compute=dp.get_precision('Point Of Sale'), string='Sub Total',method=True, type='float',store=True),
+        'exonerado': fields.function(_exonerado,digits_compute=dp.get_precision('Account'), string='Exonerado de IGV',method=True,store=True)
     }
 
     _defaults = {
@@ -177,9 +186,10 @@ class pos_order(osv.osv):
                         #if line.product_id.qty_disponible < line.qty:
                         #    raise osv.except_osv(_('Warning!'),_('No puede vender un producto importado de almacen PRINCIPAL con stock insuficiente, Producto: "%s" (Cant. Dispo:%d).') %(line.product_id.name, line.product_id.qty_disponible,))
                     else:
-                        if not order.picking_id:  
-                            if line.product_id.qty_disponible < line.qty:
-                                raise osv.except_osv(_('Warning!'),_('No puede vender un producto con stock insuficiente, Producto: "%s" (Cant. Dispo:%d).') %(line.product_id.name, line.product_id.qty_disponible,))
+                        if not order.picking_id:
+                            if line.product_id.type =='product' :
+                                if line.product_id.qty_disponible < line.qty:
+                                    raise osv.except_osv(_('Warning!'),_('No puede vender un producto con stock insuficiente, Producto: "%s" (Cant. Dispo:%d).') %(line.product_id.name, line.product_id.qty_disponible,))
         #Fin     
         return res
 
@@ -270,8 +280,9 @@ class pos_order(osv.osv):
                     if line.product_id.qty_disponible < line.qty:
                         raise osv.except_osv(_('Warning!'),_('No puede vender un producto importado de almacen PRINCIPAL con stock insuficiente, Producto: "%s" (Cant. Dispo:%d).') %(line.product_id.name, line.product_id.qty_disponible,))
                 if not order.almacendespacho_id:
-                    if line.product_id.qty_disponible < line.qty:
-                        raise osv.except_osv(_('Warning!'),_('No puede vender un producto con stock insuficiente, Producto: "%s" (Cant. Dispo:%d).') %(line.product_id.name, line.product_id.qty_disponible,))
+                    if line.product_id.type == 'product':
+                        if line.product_id.qty_disponible < line.qty:
+                            raise osv.except_osv(_('Warning!'),_('No puede vender un producto con stock insuficiente, Producto: "%s" (Cant. Dispo:%d).') %(line.product_id.name, line.product_id.qty_disponible,))
         #fin
         return pos_order_id
 
@@ -311,7 +322,7 @@ class pos_order(osv.osv):
                     if line.product_id and line.product_id.type == 'service':
                         continue
                     move_obj.create(cr, uid, {
-                        'name': line.name,
+                        'name': line.descripcion,
                         'product_uom': line.product_id.uom_id.id,
                         'product_uos': line.product_id.uom_id.id,
                         'picking_id': picking_id,
@@ -319,6 +330,7 @@ class pos_order(osv.osv):
                         'product_uos_qty': abs(line.qty),
                         'product_qty': abs(line.qty),
                         'tracking_id': False,
+                        'price_unit':  line.product_id.standard_price,
                         #'type': 'in' if order.devolucion else 'out', 
                         'type': 'out', 
                         'state': 'draft',
@@ -360,7 +372,7 @@ class pos_order(osv.osv):
                     if line.product_id and line.product_id.type == 'service':
                         continue
                     move_obj.create(cr, uid, {
-                        'name': line.name,
+                        'name': line.descripcion,
                         'product_uom': line.product_id.uom_id.id,
                         'product_uos': line.product_id.uom_id.id,
                         'picking_id': picking_id,
@@ -368,6 +380,7 @@ class pos_order(osv.osv):
                         'product_uos_qty': abs(line.qty),
                         'product_qty': abs(line.qty),
                         'tracking_id': False,
+                        'price_unit':  line.product_id.standard_price,
                         #'type': 'in' if order.devolucion else 'out', 
                         'type': 'out',
                         'state': 'draft',
@@ -408,11 +421,15 @@ class pos_order(osv.osv):
                 #_logger.error("SHOP ID 0: %r", order.name)
             else:
                 raise osv.except_osv(_('Error!'), _('No se puede eliminar los pagos de una orden de venta cuya caja a sido cerrado.'))
-        self.write(cr, uid, ids, {'state': 'draft'}, context=context)        
+        #self.write(cr, uid, ids, {'state': 'draft'}, context=context)        
+        for id in ids:
+            cr.execute("UPDATE pos_order SET state='draft' WHERE id=%s", (id,))
         return True
     #PARA QUE DESPUES DE HACER UN PAGO DE CAMBIE DE ESTADO    
     def action_paid2(self, cr, uid, ids, context=None):
-        self.write(cr, uid, ids, {'state': 'paid'}, context=context)
+        #self.write(cr, uid, ids, {'state': 'paid'}, context=context)
+        for id in ids:
+            cr.execute("UPDATE pos_order SET state='paid' WHERE id=%s", (id,))
         return True
 
     #ANULA UN TICKET
@@ -437,15 +454,79 @@ class pos_order(osv.osv):
             #fin
             if order.picking_id:
                 if stock_picking_obj.browse(cr, uid, order.picking_id.id, context=context).state <> 'cancel':
-                    raise osv.except_osv(_('Error!'), _('Unable to cancel the picking.'))
-
-        self.write(cr, uid, ids, {'state': 'cancel', 'amount_total': 0.0}, context=context)
+                    raise osv.except_osv(_('Error!'), _('Unable to cancel the picking.'))       
+        #self.write(cr, uid, ids, {'state': 'cancel'}, context=context)
+        for id in ids:
+            cr.execute("UPDATE pos_order SET amount_total=0.0, state='cancel' WHERE id=%s", (id,))
         return True
+
+    def add_payment(self, cr, uid, order_id, data, context=None):
+        """Create a new payment for the order"""
+        if not context:
+            context = {}
+        statement_line_obj = self.pool.get('account.bank.statement.line')
+        property_obj = self.pool.get('ir.property')
+        order = self.browse(cr, uid, order_id, context=context)
+        args = {
+            'amount': data['amount'],
+            'ref_card': data.get('payment_name', '') or '', #AÑADIDO PARA PODER REGISTRAR EL NUMERO DE OPERACION
+            'date': data.get('payment_date', time.strftime('%Y-%m-%d')),
+            'name': order.name + ': ' + (data.get('payment_name', '') or ''),
+            'partner_id': order.partner_id and self.pool.get("res.partner")._find_accounting_partner(order.partner_id).id or False,
+        }
+
+        account_def = property_obj.get(cr, uid, 'property_account_receivable', 'res.partner', context=context)
+        args['account_id'] = (order.partner_id and order.partner_id.property_account_receivable \
+                             and order.partner_id.property_account_receivable.id) or (account_def and account_def.id) or False
+
+        if not args['account_id']:
+            if not args['partner_id']:
+                msg = _('There is no receivable account defined to make payment.')
+            else:
+                msg = _('There is no receivable account defined to make payment for the partner: "%s" (id:%d).') % (order.partner_id.name, order.partner_id.id,)
+            raise osv.except_osv(_('Configuration Error!'), msg)
+
+        context.pop('pos_session_id', False)
+
+        journal_id = data.get('journal', False)
+        statement_id = data.get('statement_id', False)
+        assert journal_id or statement_id, "No statement_id or journal_id passed to the method!"
+
+        for statement in order.session_id.statement_ids:
+            if statement.id == statement_id:
+                journal_id = statement.journal_id.id
+                break
+            elif statement.journal_id.id == journal_id:
+                statement_id = statement.id
+                break
+
+        if not statement_id:
+            raise osv.except_osv(_('Error!'), _('You have to open at least one cashbox.'))
+
+        args.update({
+            'statement_id' : statement_id,
+            'pos_statement_id' : order_id,
+            'journal_id' : journal_id,
+            'type' : 'customer',
+            'ref' : order.session_id.name,
+        })
+
+        statement_line_obj.create(cr, uid, args, context=context)
+
+        return statement_id
+
+    #Evita eliminar un orden cuando tenga asignado un correlativo de venta.
+    def unlink(self, cr, uid, ids, context=None):
+        for rec in self.browse(cr, uid, ids, context=context):
+            if rec.name:
+                raise osv.except_osv(_('ERROR!'), _('No se puede eliminar esta orden, por tener asignada un Numero de Venta, pero si puede Anular este ticket'))
+        return super(pos_order, self).unlink(cr, uid, ids, context=context)        
 
 pos_order()
 
 class pos_order_line(osv.osv):
     _inherit = 'pos.order.line'  
+
 
     def _amount_line_all(self, cr, uid, ids, field_names, arg, context=None):
         res = dict([(i, {}) for i in ids])
@@ -462,6 +543,7 @@ class pos_order_line(osv.osv):
             #_logger.error("SHOP ID 1: %r", res)
         return res
     _columns = {#Añadimos precision para poder generar los asientos correctamente
+        'descripcion': fields.char('Descripcion',),        
         'price_subtotal': fields.function(_amount_line_all, multi='pos_order_line_amount', string='Subtotal w/o Tax',digits_compute=dp.get_precision('Point Of Sale'), ),
         'price_subtotal_incl': fields.function(_amount_line_all, multi='pos_order_line_amount', string='Subtotal',digits_compute=dp.get_precision('Point Of Sale'), ),
   
@@ -492,19 +574,21 @@ class pos_order_line(osv.osv):
         #PERMITE VER SI LA CANTIDAD A VENDER ES PERMITIDA PARA PRODUCTOS IMPORTADOS
         prod_id = self.pool.get('product.product').browse(cr, uid, product_id, context=c)        
         if almacendespacho:
-            #if prod_id.procedencia == 'import':
-            if prod_id.qty_disponible < qty:
-                warn_msg = _(('No puede vender un producto importado del almacen PRINCIPAL con stock insuficiente, Producto: "%s" (Cant. Dispo:%d).')  %(prod_id.name, prod_id.qty_disponible,))
-                warning_msgs += _("Stock insuficiente ! : ") + warn_msg +"\n\n"
+            if prod_id.type == 'product':
+                if prod_id.qty_disponible < qty:
+                    warn_msg = _(('No puede vender un producto importado del almacen PRINCIPAL con stock insuficiente, Producto: "%s" (Cant. Dispo:%d).')  %(prod_id.name, prod_id.qty_disponible,))
+                    warning_msgs += _("Stock insuficiente ! : ") + warn_msg +"\n\n"
         else:
-            if prod_id.qty_disponible < qty:
-                warn_msg = _(('No puede vender un producto con stock insuficiente, Producto: "%s" (Cant. Dispo:%d).') %(prod_id.name, prod_id.qty_disponible,))
-                warning_msgs += _("Stock insuficiente ! : ") + warn_msg +"\n\n"
+            if prod_id.type == 'product':
+                if prod_id.qty_disponible < qty:
+                    warn_msg = _(('No puede vender un producto con stock insuficiente, Producto: "%s" (Cant. Dispo:%d).') %(prod_id.name, prod_id.qty_disponible,))
+                    warning_msgs += _("Stock insuficiente ! : ") + warn_msg +"\n\n"
         #FIN        
 
         price = self.pool.get('product.pricelist').price_get(cr, uid, [pricelist],product_id, qty or 1.0, partner_id)[pricelist]
         result = self.onchange_qty(cr, uid, ids, product_id, 0.0, qty, price, almacendespacho, session_id, context=c)
         result['price_unit'] = price
+        result['descripcion'] = prod_id.name
 
         if warning_msgs:
             warning = {
@@ -556,14 +640,15 @@ class pos_order_line(osv.osv):
              
         #_logger.error("PINCK_CONTEXT1: %r", almacendesp)        
         if almacendespacho:
-            #if prod.procedencia == 'import':
-            if prod.qty_disponible < qty:
-                warn_msg = _(('No puede vender un producto importado del almacen PRINCIPAL con stock insuficiente, Producto: "%s" (Cant. Dispo:%d).')  %(prod.name, prod.qty_disponible,))
-                warning_msgs += _("Stock insuficiente ! : ") + warn_msg +"\n\n"
+            if prod.type == 'product':
+                if prod.qty_disponible < qty:
+                    warn_msg = _(('No puede vender un producto importado del almacen PRINCIPAL con stock insuficiente, Producto: "%s" (Cant. Dispo:%d).')  %(prod.name, prod.qty_disponible,))
+                    warning_msgs += _("Stock insuficiente ! : ") + warn_msg +"\n\n"
         else:
-            if prod.qty_disponible < qty:
-                warn_msg = _(('No puede vender un producto con stock insuficiente, Producto: "%s" (Cant. Dispo:%d).') %(prod.name, prod.qty_disponible,))
-                warning_msgs += _("Stock insuficiente ! : ") + warn_msg +"\n\n"
+            if prod.type == 'product':
+                if prod.qty_disponible < qty:
+                    warn_msg = _(('No puede vender un producto con stock insuficiente, Producto: "%s" (Cant. Dispo:%d).') %(prod.name, prod.qty_disponible,))
+                    warning_msgs += _("Stock insuficiente ! : ") + warn_msg +"\n\n"
             
         #FIN
 
@@ -576,4 +661,14 @@ class pos_order_line(osv.osv):
 
         return {'value': result, 'warning': warning}
 
+class account_bank_statement_line(osv.osv):
+    _inherit = "account.bank.statement.line"
+    _columns = {
+        'ref_card': fields.char('Ref. voucher pago',size=32,),
+    }
 
+class account_journal(osv.osv):
+    _inherit = "account.journal"
+    _columns = {
+        'forma_pago': fields.selection([('efectivo','Efectivo'),('tarjeta','Tarjeta'),('deposito','Deposito')],'Forma de pago'),
+    }
