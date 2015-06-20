@@ -7,5 +7,13 @@
             <field name="usage">ajuste</field>
             <field name="company_id"></field>
         </record>
+
+        <record id="location_muestra_productos" model="stock.location">
+            <field name="name">MUESTRAS TERCEROS</field>
+            <field name="location_id" ref="stock.stock_location_locations_virtual"/>
+            <field name="usage">muestra</field>
+            <field name="company_id"></field>
+        </record>
+
     </data>
 </openerp>

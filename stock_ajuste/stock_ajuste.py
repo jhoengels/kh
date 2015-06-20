@@ -40,9 +40,11 @@ class stock_location(osv.osv):
     def __init__(self, *args):        
         super(stock_location, self).__init__(*args)
         option = ('ajuste', 'Ajuste Inventario')
+        option1 = ('muestra', 'Muestra')
         type_selection = self._columns['usage'].selection
         if option not in type_selection:
             type_selection.append(option)
+            type_selection.append(option1)
 
 
 class stock_move(orm.Model):
