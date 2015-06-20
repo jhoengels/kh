@@ -66,11 +66,13 @@
 
                 <field name="amount_tax" position="before" >
                     <field name="amount_subtotal" />
+                    <field name="exonerado" />
                 </field>
 
                 <!-- PARA PEDIDDOS DE ALMACEN-->
                 <field name="product_id" position="replace">
                     <field name="product_id" on_change="onchange_product_id(parent.pricelist_id,product_id,qty, parent.partner_id, parent.almacendespacho_id, parent.session_id)" options="{'limit': 10, 'create': false, 'create_edit': false}"/>
+                    <field name="descripcion"/>
                 </field>
                 <field name="qty" position="replace">
                    <field name="qty" on_change="onchange_qty(product_id, discount, qty, price_unit, parent.almacendespacho_id, parent.session_id,context)"/>
@@ -82,8 +84,12 @@
 
                 <field name="discount" position="replace" >
                     <field name="discount"  on_change="onchange_qty(product_id, discount, qty, price_unit, parent.almacendespacho_id, parent.session_id,context)"/>
-                </field>
+                </field>                
                 <!-- FIN -->
+                <!-- REF. PAGO-->
+                <field name="journal_id" position='after'>
+                    <field name="ref_card"/>
+                </field>
 	        </field>
     	</record>
 
@@ -129,6 +135,49 @@
                 <field name="sequence_id" position="after">
                      <field name="sequencepos_id"/>
                 </field>
+            </field>
+        </record>
+
+<!-- Añade el campo ref_card al formulario account.bank.statement-->
+        <record model="ir.ui.view" id="view_account_bank_statement_ref_card_inherited_form">
+            <field name="name">account.bank.statement_ref_card.inherited.form</field>
+            <field name="model">account.bank.statement</field>
+            <field name="inherit_id" ref="account.view_bank_statement_form2"/>
+            <field name="arch" type="xml">
+                <field name="ref" position='after'>
+                    <field name="ref_card"/>                
+                </field>
+            </field>
+        </record>
+
+<!-- Añade el campo forma_pago al formulario account.journal-->
+        <record model="ir.ui.view" id="view_account_bank_statement_inherited_form">
+            <field name="name">account.journal.forma.pago.inherited</field>
+            <field name="model">account.journal</field>
+            <field name="inherit_id" ref="account.view_account_journal_form"/>
+            <field name="arch" type="xml">
+                <field name="type" position='after'>
+                    <field name="forma_pago"/>                
+                </field>
+            </field>
+        </record>
+
+<!-- Para poder poder buscar por TB o TF o por Cliente-->
+       <record model="ir.ui.view" id="view_pos_order_ticket_filter" >
+            <field name="name">pos.order.list.select.ticket</field>
+            <field name="model">pos.order</field>
+            <field name="inherit_id" ref="point_of_sale.view_pos_order_filter"/>
+            <field name="arch" type="xml">
+                <field name='name' position="replace">
+                    <field name="name" filter_domain="['|',('name','ilike',self),('pos_reference','ilike',self)]"/>
+                </field>
+                <field name='date_order' position='before'>
+                    <field name="partner_id"/>
+                </field>
+                <xpath expr="//filter[@string='Order Date']" position="after">
+                    <filter string='Ventas hoy' domain="[('date_order', '&gt;=', time.strftime('%%Y-%%m-%%d 00:00:00')),('date_order', '&lt;=', time.strftime('%%Y-%%m-%%d 23:59:59'))]" />
+                </xpath>
+
             </field>
         </record>
 
