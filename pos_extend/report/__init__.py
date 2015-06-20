@@ -28,5 +28,9 @@
 
 
 import pos_order_print
+import pos_order_venta_print
+import pos_report_fact_venta
+import pos_report_pago_venta
+import pos_report_bolet_venta
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
