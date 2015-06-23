@@ -168,13 +168,14 @@ class stock_warehouse(osv.osv):
         'sequence_abastc_id': fields.many2one('ir.sequence', "Secuencia de abastecimiento", help="Secuencia utilizada para la composicion de productos."), 
     }
 
-
 class stock_abasteciminto_line(orm.Model):
     _name = 'stock.abastecimiento.line'
     _columns = {
         'product_id': fields.many2one('product.product', 'Producto', required=True, ),
-        'product_qty': fields.float('Cantidad', digits_compute=dp.get_precision('Product Unit of Measure'), required=True),
+        'product_qty': fields.float('Cantidad solicitada', digits_compute=dp.get_precision('Product Unit of Measure'), required=True),
+        'product_qty_abast': fields.float('Cantidad abastecida', digits_compute=dp.get_precision('Product Unit of Measure'), required=True),
         'abastec_id': fields.many2one('stock.abastecimiento', 'Abastecimiento',  ondelete='cascade'),
+
 
 
     }
@@ -195,10 +196,8 @@ class stock_abasteciminto(orm.Model):
         'name': lambda obj, cr, uid, context: '/',
         'date': lambda *a: time.strftime('%Y-%m-%d %H:%M:%S'),
         'state': 'draft',
-        #'location_id': _default_location_source,
         'user_id': lambda obj, cr, uid, context: uid,        
    }
-
     def create(self, cr, uid, vals, context=None):
         if context is None:
             context = {}           
@@ -208,13 +207,6 @@ class stock_abasteciminto(orm.Model):
         warehouse_obj =  self.pool.get('stock.warehouse')
         warehouse_campos = warehouse_obj.read(cr, uid, [warehouse_id], ['sequence_abastc_id','lot_stock_id'], context=None)
         sequence_obj = self.pool.get('ir.sequence')
-
-        #Permite enviar el id del almacen de despacho
-        #context = context.copy()
-        #if location_id:
-        #    context.update({'location': location_id })
-        #Fin            
-        #_logger.error("INNNNNN: %r", warehouse_campos[0]['sequence_abastc_id'][0])
 
         if warehouse_campos[0]['sequence_abastc_id']:
             vals = {'name': sequence_obj.get_id(cr, uid, warehouse_campos[0]['sequence_abastc_id'][0], context=context)}
@@ -255,32 +247,24 @@ class stock_abasteciminto(orm.Model):
                         stock_abastec_obj.create(cr,uid,stock_abastec_line,context)                                            
         return True
 
-    def _prepare_order_line_move(self, cr, uid, order, line, picking_id, date_planned, location_id, location_dest_id, context=None):        
-        #location_id = order.shop_id.warehouse_id.lot_stock_id.id
-        #output_id = order.shop_id.warehouse_id.lot_output_id.id
+    def _prepare_order_line_move(self, cr, uid, order, line, picking_id, date_planned, location_id, location_dest_id, qty, context=None):        
         m =  {
             'name': line.product_id.name,
             'picking_id': picking_id,
             'product_id': line.product_id.id,
             'date': date_planned,
             'date_expected': date_planned,
-            'product_qty': line.product_qty,
+            'product_qty': qty,
             'product_uom': line.product_id.uom_id.id,
-            #'product_uos_qty': (line.product_uos and line.product_uos_qty) or line.product_uom_qty,
-            #'product_uos': (line.product_uos and line.product_uos.id) or line.product_uom.id,
-            #'product_packaging': line.product_packaging.id,
             #'partner_id': line.address_allotment_id.id or order.partner_shipping_id.id,
+            #'company_id': order.company_id.id,
             'location_id': location_id,
             'location_dest_id': location_dest_id[0],
-            #'sale_line_id': line.id,
             'tracking_id': False,
             'state': 'draft',
-            #'state': 'waiting',
-            #'company_id': order.company_id.id,
             'type': 'internal',
             'price_unit': 0.0
-        }
-        #_logger.error("INNNNNN: %r", m)
+        }        
         return m
 
     def _prepare_picking(self, cr, uid, order, location_id, location_dest_id, context=None):
@@ -297,24 +281,41 @@ class stock_abasteciminto(orm.Model):
             'location_dest_id': location_dest_id[0],
         }
 
-
     def _create_picking(self,cr, uid, order, lines, picking_id=False, context=None):
         if context is None:
             context = {}
+
         stock_obj =  self.pool.get('stock.picking')
         move_obj =  self.pool.get('stock.move')
         location_obj =  self.pool.get('stock.location')
+        abast_line_obj =  self.pool.get('stock.abastecimiento.line')
+
         i=0.0
         location_id = 12
         location_dest_id = location_obj.search(cr, uid, [('chained_location_id','=',order.warehouse_id.lot_stock_id.id)])
-        #picking_id = stock_obj.create(cr, uid, self._prepare_picking(cr, uid, order, location_id, location_dest_id, context), context) 
-        #_logger.error("MINIMO11111: %r", pikcing_id)   
+        context.update({'location': location_id })
+
         for line in lines:
             i=i+1
             if not picking_id:
                 picking_id = stock_obj.create(cr, uid, self._prepare_picking(cr, uid, order, location_id, location_dest_id, context), context)   
-            move_id = move_obj.create(cr, uid, self._prepare_order_line_move(cr, uid, order, line, picking_id, order.fecha_abast, location_id, location_dest_id, context=context))                
-            if i>2:
+            qty = None
+            product = self.pool.get('product.product').browse(cr, uid, [line.product_id.id], context)[0]
+            if product.procedencia == 'import':
+                if product.qty_disponible >= line.product_qty :
+                    qty =  line.product_qty
+                else:
+                    qty = product.qty_disponible                
+            else:
+                if product.qty_available >= line.product_qty :
+                    qty =  line.product_qty
+                else:
+                    qty = product.qty_available
+            if qty >0:
+                move_id = move_obj.create(cr, uid, self._prepare_order_line_move(cr, uid, order, line, picking_id, order.fecha_abast, location_id, location_dest_id, qty,context=context))                
+                #cr.execute("UPDATE stock_abastecimiento_line SET product_qty_abast=%s WHERE id=%s", (qty, line.id))
+                abast_line_obj.write(cr, uid, line.id, {'product_qty_abast': qty}, context)
+            if i>10:
                 i=0
                 picking_id=False
             #_logger.error("MINIMO2: %r", pikcing_id) 
@@ -324,3 +325,4 @@ class stock_abasteciminto(orm.Model):
         for order in self.browse(cr, uid, ids, context=context):
             self._create_picking(cr, uid, order, order.abastec_line_ids, None, context=context)
         return True
+    
