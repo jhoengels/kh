@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data> 
+        <!-- Añade el campo mod y cif al formulario de lista de materiales -->
+        <record id="view_mrp_bom_costos_inherit_form" model="ir.ui.view">
+            <field name="name">mrp.bom.costos.inherit.form</field>
+            <field name="model">mrp.bom</field>
+            <field name="inherit_id" ref="mrp.mrp_bom_form_view"/>
+            <field name="arch" type="xml">
+                <field name="type" position="after">
+                    <field name="mod" string='Mano de obra directa (S/.)'/>
+                    <field name="cif" string='Costos inderectos de fabricacion (%%)'/>
+                </field>
+           </field>
+        </record>
+
+    <!-- Añade el campo sequence de fabricacion a la ubicacion-->
+    <record model="ir.ui.view" id="view_location_sequence_fabricacion_form">
+          <field name="name">location.sequence.fabricacion.form.inherit</field>
+          <field name="model">stock.location</field>
+          <field name="type">form</field>
+          <field name="inherit_id" ref="location_sequences.view_stock_location_form_inherited"/>
+          <field name="arch" type="xml">
+              <field name="sequence_out_id" position="after">                    
+                    <field name="sequence_production_id" />                    
+              </field>
+          </field>
+      </record>
+
+    </data>
+</openerp>
