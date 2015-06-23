@@ -42,22 +42,24 @@ class sale_cotizacion(osv.osv):
     def _amount_total(self, cr, uid, ids, name, args, context=None):
         res = {}
         for order in self.browse(cr, uid, ids, context=context):
-            #res[order.id] = {'i_total': 0}
             val=0.0
             for line in order.cotizacion_line:  
                 #_logger.error("COTIZACION 2---: %r", line.price_subtotal )              
                 val+= line.price_subtotal           
             res[order.id] = val
         return res
-    def _amount_total_dscto_blobal(self, cr, uid, ids, name, args, context=None):
+    def _amount_dscto_global(self, cr, uid, ids, name, args, context=None):
         res = {}
         for order in self.browse(cr, uid, ids, context=context):
-            #res[order.id] = {'i_total': 0}
             val=0.0
-            #for line in order.cotizacion_line:  
-                #_logger.error("COTIZACION 2---: %r", line.price_subtotal )              
-            #    val+= line.price_subtotal  
-            res[order.id] = order.total * (1 - order.dscto_global /100.0)
+            val1 = 0.0
+            for line in order.cotizacion_line:               
+                if line.product_id.type !='service':
+                    val+= line.price_subtotal 
+                    #_logger.error("COTIZACION 233---: %r", val ) 
+                else:
+                    val1 += line.price_subtotal 
+            res[order.id] = val * (1 - order.dscto_global/100.0) + val1
         return res
 
     def _amount_total_dolar(self, cr, uid, ids, name, args, context=None):
@@ -86,6 +88,7 @@ class sale_cotizacion(osv.osv):
         'flete': fields.selection([('con_flete','Incluido Flete'),('sin_flete','No Incluye Flete')],'Flete'),
         'embalaje': fields.selection([('con_embalaje','Incluido Embalaje'),('sin_embalaje','No Incluye Embalaje')],'Embalaje'),
         'fecha_expected': fields.datetime('Fecha entrega al cliente', select=True, ),
+        'fecha_valida': fields.datetime('Fecha de vigencia'),
         'tipo_entrega': fields.selection([('dentro_ciudad','Dentro de Ciudad'),('recojo_agencia','Recojo en Agencia'),('recojo_tienda','Recojo en Tienda')],'Tipo Entrega'),
         'tipo_cambio': fields.float('Tipo de Cambio', digits_compute= dp.get_precision('Product Price'),),     
         'total_dolar': fields.function(_amount_total_dolar, string='Total Dolar', digits_compute= dp.get_precision('Account'), method=True, type='float'),
@@ -94,7 +97,7 @@ class sale_cotizacion(osv.osv):
 
         'dscto_global': fields.float('Dscto global(%)', digits_compute= dp.get_precision('Discount'),),
         'total': fields.function(_amount_total, string='Total', digits_compute= dp.get_precision('Account'), method=True, type='float'),        
-        'total_dscto_global': fields.function(_amount_total_dscto_blobal, string='Total con Dscto', digits_compute= dp.get_precision('Account'), method=True, type='float'),
+        'total_dscto_global': fields.function(_amount_dscto_global, string='Total con Dscto', digits_compute= dp.get_precision('Account'), method=True, type='float'),
 
 
         }
@@ -141,7 +144,6 @@ class sale_cotizacion(osv.osv):
         }
         return {'type': 'ir.actions.report.xml', 'report_name': 'sale.cotizacion.print', 'datas': datas, 'nodestroy': True}
 
-
     def action_order_create(self, cr, uid, ids, context=None):
         for cotizacion in self.browse(cr, uid, ids, context=context):
             self._create_order(cr, uid, cotizacion, cotizacion.cotizacion_line, None, context=context)
@@ -149,10 +151,16 @@ class sale_cotizacion(osv.osv):
 
     def _create_order(self, cr, uid, cotizacion, cotizacion_lines, order_id=False, context=None):
         sale_obj = self.pool.get('sale.order')
-        sale_line_obj = self.pool.get('sale.order.line')
-        order_id = sale_obj.create(cr, uid, self._prepare_order(cr, uid, cotizacion, context=context))
+        sale_line_obj = self.pool.get('sale.order.line')  
+        i=0.0      
         for line in cotizacion_lines:
+            i=i+1
+            if not order_id:
+                order_id = sale_obj.create(cr, uid, self._prepare_order(cr, uid, cotizacion, context=context))
             sale_line_id = sale_line_obj.create(cr, uid, self._prepare_order_line(cr, uid, cotizacion, line, order_id, context=context))
+            if i>7:
+                i=0
+                order_id=False
         return True
 
     def _prepare_order(self, cr, uid, cotizacion, context=None):
@@ -182,7 +190,8 @@ class sale_cotizacion(osv.osv):
             'price_unit': line.price_subtotal/line.product_uom_qty or 0.0,
             'order_partner_id': cotizacion.partner_id.id,
             'order_id': order_id,
-            'state': 'draft',            
+            'state': 'draft', 
+            'discount': cotizacion.dscto_global if line.product_id.type !='service' else 0.0,           
         }
 
     def action_view_order(self, cr, uid, ids, context=None):
@@ -238,7 +247,6 @@ class sale_cotizacion(osv.osv):
     def button_dummy(self, cr, uid, ids, context=None):
         return True
 
-
 class sale_cotizacion_line(osv.osv):
     _name = 'sale.cotizacion.line'
 
@@ -248,7 +256,7 @@ class sale_cotizacion_line(osv.osv):
             
             price = (line.price_unit*(1 - line.dscto_unit/100.0)  + line.flete*line.cotizacion_id.costo_flete/100.0 + line.embalaje*line.cotizacion_id.costo_embalaje/100.0)*line.product_uom_qty
             #price = line.price_unit_venta * line.product_uom_qty
-            _logger.error("SUB TOTALLL 1---: %r", price)
+            #_logger.error("SUB TOTALLL 1---: %r", price)
             res[line.id] = price
         return res
 
@@ -309,7 +317,6 @@ class sale_cotizacion_line(osv.osv):
         #_logger.error("COTIZACION 1---: %r", costo_flete)
         return {'value': value}
 
-
 class sale_order(osv.osv):
     _inherit = 'sale.order'
     _columns = {
@@ -338,7 +345,6 @@ class sale_order_line(osv.osv):
             })
         #_logger.error("CAMBIADO PRODUCTO---: %r", val)
         return val
-
 
 class sale_shop(osv.osv):
     _inherit = "sale.shop"

@@ -251,7 +251,8 @@
           <para style="P2">
             <b>COTIZACION N°:</b> [[  o.name ]]
           </para>
-          <para style="P2"><b>FECHA: </b> [[  o.date_order ]]</para>
+          <para style="P2"><b>FECHA: </b> [[  formatLang(o.date_order, date=True) ]]</para>
+          <para style="P2"><b>VALIDO HASTA: </b> [[ formatLang(o.fecha_valida, date=True) ]]</para>
         </td>
       </tr>
     </blockTable>
@@ -372,7 +373,7 @@
       <tr>
         <td>
           <para style="P5"><b>Forma de pago: </b> [[ o.forma_pago or removeParentNode('para') ]]</para>
-          <para style="P5"><b>Días Crédito: </b> [[ o.payment_term.name or removeParentNode('para') ]]</para>
+          <para style="P5"><b>Días Crédito: </b> [[ o.payment_term and o.payment_term.name or '' ]]</para>
           <para style="P5"><b>Moneda: </b></para>
           <para style="P5"><b>Tipo Cambio: </b> </para>
           <para style="P5"><b>Impuesto 18%: </b>[[ o.igv == 'con_igv' and 'INCLUIDO IGV' or o.igv == 'sin_iv' and 'NO INCLUYE IGV' or '' ]]</para>

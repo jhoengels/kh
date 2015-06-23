@@ -44,10 +44,9 @@
                             <group>
                                 <field name="partner_id" on_change="onchange_partner_id(partner_id, context)"  domain="[('customer','=',True)]" context="{'search_default_customer':1, 'show_address': 1}" options='{"always_reload": True}'/>
                                 <field name="partner_shipping_id" context="{'default_type':'delivery', 'show_address': 1}" options='{"always_reload": True}'/>
-                                <field name="partner_contact_id" context="{'default_type':'contact', 'show_address': 1}" options='{"always_reload": True}'/> 
-                                <field name="costo_flete"/>   
-                                <field name="costo_embalaje"/>
-                                <field name="dscto_global"/>
+                                <field name="partner_contact_id" context="{'default_type':'contact', 'show_address': 1}" options='{"always_reload": True}'/>
+                                <field name="fecha_expected"/>
+                                <field name="fecha_valida" string="Cotizacion valida hasta"/>
                                                
                             </group>
                             <group>
@@ -55,8 +54,7 @@
                                 <field name="shop_id" widget="selection"/>
                                 <field name="pricelist_id" domain="[('type','=','sale')]" on_change="onchange_pricelist_id(pricelist_id,cotizacion_line)"/>
                                 <field name="currency_id"/>                                
-                                <field name="tipo_cambio"/>  
-                                <field name="fecha_expected"/>  
+                                <field name="tipo_cambio"/>    
                             </group>
                         </group>
                         <notebook>
@@ -115,6 +113,11 @@
                                     </div>
                                     <field name="total_dolar" nolabel="1" class="oe_subtotal_footer_separator" widget='monetary'/>
 
+                                </group>
+                                <group>
+                                    <field name="costo_flete"/>   
+                                    <field name="costo_embalaje"/>
+                                    <field name="dscto_global"/>
                                 </group>
         
                                 <div class="oe_clear"/>

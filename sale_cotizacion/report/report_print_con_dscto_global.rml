@@ -262,7 +262,8 @@
           <para style="P2">
             <b>COTIZACION N°:</b> [[  o.name ]]
           </para>
-          <para style="P2"><b>FECHA: </b> [[  o.date_order ]]</para>
+          <para style="P2"><b>FECHA: </b> [[  formatLang(o.date_order, date=True) ]]</para>
+          <para style="P2"><b>VALIDO HASTA: </b> [[ formatLang(o.fecha_valida, date=True) ]]</para>
         </td>
       </tr>
     </blockTable>
@@ -352,15 +353,15 @@
           </para>
         </td>
         <td>
-          <para style="P612">TOTAL S/.</para>
-          <para style="P612">[[ o.dscto_global > 0.0 and 'DSCTO S/.' or removeParentNode('para')]] </para>
-          <para style="P612">[[ o.dscto_global > 0.0 and 'TOTAL CON DSCTO S/.' or removeParentNode('para')]] </para>
+          <para style="P612">TOTAL</para>
+          <para style="P612">[[ o.dscto_global > 0.0 and 'DSCTO' or removeParentNode('para')]] ([[ o.dscto_global ]]) %  </para>
+          <para style="P612">[[ o.dscto_global > 0.0 and 'TOTAL CON DSCTO' or removeParentNode('para')]] </para>
         </td>
         <td>
-          <para style="P611">[[ o.total ]] </para>
-          <para style="P611">[[ o.dscto_global > 0.0 and formatLang(o.total * o.dscto_global/100.00, dp='Account') or removeParentNode('para')]] 
+          <para style="P611">  S/. [[ o.total ]] </para>
+          <para style="P611"> S/. [[ o.dscto_global > 0.0 and formatLang(o.total - o.total_dscto_global, dp='Account') or removeParentNode('para')]] 
           </para>
-          <para style="P611">[[ o.dscto_global > 0.0 and formatLang(o.total  - o.total * o.dscto_global/100.00, dp='Account') or removeParentNode('para')]] 
+          <para style="P611">  S/. [[ o.dscto_global > 0.0 and formatLang(o.total_dscto_global, dp='Account') or removeParentNode('para')]] 
           </para>
         </td>
       </tr>
@@ -383,14 +384,14 @@
       <tr>
         <td>
           <para style="P5"><b>Forma de pago: </b> [[ o.forma_pago or removeParentNode('para') ]]</para>
-          <para style="P5"><b>Días Crédito: </b> [[ o.payment_term.name or removeParentNode('para') ]]</para>
+          <para style="P5"><b>Días Crédito: </b> [[ o.payment_term and o.payment_term.name or '' ]]</para>
           <para style="P5"><b>Moneda: </b></para>
           <para style="P5"><b>Tipo Cambio: </b> </para>
-          <para style="P5"><b>Impuesto 18%: </b>[[ o.igv == 'con_igv' and 'INCLUIDO IGV' or o.igv == 'sin_iv' and 'NO INCLUYE IGV' or '' ]]</para>
-          <para style="P5"><b>Flete: </b> [[ o.flete == 'con_flete' and 'INCLUIDO FLETE' or o.flete == 'sin_flete' and 'NO INCLUYE FLETE' or '' ]]</para>
-          <para style="P5"><b>Embalaje: </b> [[ o.embalaje == 'con_embalaje' and 'INCLUIDO EMBALAJE' or o.embalaje == 'sin_embalaje' and 'NO INCLUYE EMBALAJE' or '' ]]</para>
+          <para style="P5"><b>Impuesto 18%: </b>[[ o.igv and o.igv == 'con_igv' and 'INCLUIDO IGV' or o.igv == 'sin_iv' and 'NO INCLUYE IGV' or '' ]]</para>
+          <para style="P5"><b>Flete: </b> [[ o.flete and o.flete == 'con_flete' and 'INCLUIDO FLETE' or o.flete == 'sin_flete' and 'NO INCLUYE FLETE' or '' ]]</para>
+          <para style="P5"><b>Embalaje: </b> [[ o.embalaje and o.embalaje == 'con_embalaje' and 'INCLUIDO EMBALAJE' or o.embalaje == 'sin_embalaje' and 'NO INCLUYE EMBALAJE' or '' ]]</para>
           <para style="P5"><b>Fecha Entrega: </b> [[ formatLang(o.fecha_expected,date=True) or removeParentNode('para') ]]</para>
-          <para style="P5"><b>Tipo de entrega: </b> [[ o.tipo_entrega =='dentro_ciudad' and 'DENTRO DE CIUDAD' or o.tipo_entrega =='recojo_agencia' and 'RECOJO EN AGENCIA' or o.tipo_entrega =='recojo_tienda' and 'RECOJO EN TIENDA' or '' ]]</para>
+          <para style="P5"><b>Tipo de entrega: </b> [[ o.tipo_entrega and o.tipo_entrega =='dentro_ciudad' and 'DENTRO DE CIUDAD' or o.tipo_entrega =='recojo_agencia' and 'RECOJO EN AGENCIA' or o.tipo_entrega =='recojo_tienda' and 'RECOJO EN TIENDA' or '' ]]</para>
           <para style="P5"><b>Ciudad de Entrega: </b>[[ o.partner_id.state_id.name or '' ]]</para>
           <para style="P5"><b>Datos Destinatario: </b> </para>
            <para style="P6"><font color="white">- </font></para>
