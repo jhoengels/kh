@@ -39,20 +39,44 @@ from openerp import SUPERUSER_ID
 class stock_max_min_line(orm.Model):
     _name = 'stock.max.min.line'
     _columns = {
+        'name': fields.char('Nombre'),
         'product_id': fields.many2one('product.product', 'Producto', required=True, ),
         'stock_min': fields.float('Cantidad minima', digits_compute=dp.get_precision('Product Unit of Measure'), required=True),
         'stock_max': fields.float('Cantidad maxima', digits_compute=dp.get_precision('Product Unit of Measure'), required=True),
         'max_min_id': fields.many2one('stock.max.min', 'Stock max min',  ondelete='cascade'),
     }
-
     _defaults = {
         'stock_min': lambda obj, cr, uid, context: 0.0,
-        'stock_max': lambda obj, cr, uid, context: 0.0,
-        #'date': lambda *a: time.strftime('%Y-%m-%d %H:%M:%S'),
-        #'state': 'draft',
-        #'location_id': _default_location_source,
-        #'user_id': lambda obj, cr, uid, context: uid,        
+        'stock_max': lambda obj, cr, uid, context: 0.0,  
    }
+
+    def create(self, cr, uid, vals, context=None):
+        res_id = super(stock_max_min_line, self).create(cr, uid, vals, context)
+        if ('product_id' in vals):
+            prod = self.pool.get('product.product').browse(cr, uid, vals['product_id'], context=context)
+            vals.update({'name': prod.name })
+        self.write(cr, uid, [res_id], vals, context=context)        
+        return res_id
+
+    def write(self, cr, uid, ids, vals, context=None):
+        #_logger.error("INNNNNN111111: %r", vals)
+        if ('product_id' in vals):
+            prod = self.pool.get('product.product').browse(cr, uid, vals['product_id'], context=context)
+            vals.update({'name': prod.name })
+        return super(stock_max_min_line, self).write(cr, uid, ids, vals, context=context)  
+
+    def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
+        if context is None:
+            context = {}
+        return super(stock_max_min_line, self).search(cr, uid, args, offset, limit, order, context, count)    
+    #Eliminar un registro
+    def unlink(self, cr, uid, ids, context=None):
+        for reg in self.browse(cr, uid, ids, context=context):
+            orderpoint_obj = self.pool.get('stock.warehouse.orderpoint')
+            orderpoint_id = orderpoint_obj.search(cr, uid,[('warehouse_id','=',reg.max_min_id.warehouse_id.id),('product_id','=',reg.product_id.id)], context=context)
+            _logger.error("INNNNNN: %r", orderpoint_id)
+            orderpoint_obj.unlink(cr,uid,orderpoint_id,context)
+        return super(stock_max_min_line, self).unlink(cr, uid, ids, context=context)      
 
 class stock_max_min(osv.osv):
     _name = 'stock.max.min'
@@ -62,23 +86,18 @@ class stock_max_min(osv.osv):
         'user_id': fields.many2one('res.users', 'Usuario', select=True, track_visibility='onchange'), 
         'warehouse_id': fields.many2one('stock.warehouse', 'Almacen', required=True, states={'done':[('readonly',True)], 'cancel':[('readonly',True)]}),
         'date': fields.datetime('Fecha creacion', required=True, select=1, states={'done':[('readonly',True)],'cancel':[('readonly',True)]}),
-        #'concepto': fields.selection([('ingreso', 'Ingreso por ajuste de inventario'),('salida', 'Salida por ajuste de inventario')],'Concepto', select = True, required=True, states={'done':[('readonly',True)],'cancel':[('readonly',True)]}),
-        #'move_lines_ids': fields.one2many('stock.move', 'ajuste_move_id', 'Moviminetos relacionado', states={'done':[('readonly',True)],'cancel':[('readonly',True)]}),
         'max_min_line_ids': fields.one2many('stock.max.min.line', 'max_min_id', 'Stock Max Min de Productos', states={'done':[('readonly',True)],'cancel':[('readonly',True)]}),
         'state': fields.selection([('draft','Vigente'),('done','Obsoleto'),('cancel','Cancelado')],string='Estado',readonly=True,required=True),
     }
     _order='date desc'
 
     _defaults = {
-        #'name': lambda obj, cr, uid, context: '/',
         'date': lambda *a: time.strftime('%Y-%m-%d %H:%M:%S'),
         'state': 'draft',
-        #'location_id': _default_location_source,
         'user_id': lambda obj, cr, uid, context: uid,        
    }
 
     def create(self, cr, uid, vals, context=None):
-        #_logger.error("INNNNNN111111: %r", vals)
         return super(stock_max_min, self).create(cr, uid, vals, context)
 
     def write(self, cr, uid, ids, vals, context=None):
@@ -162,35 +181,67 @@ class stock_max_min(osv.osv):
                              
         return True 
 
+    def action_view_line(self, cr, uid, ids, context=None):
+        mod_obj = self.pool.get('ir.model.data')
+        act_obj = self.pool.get('ir.actions.act_window')
+        result = mod_obj.get_object_reference(cr, uid, 'stock_abastecimiento', 'action_stock_max_min_line_tree')        
+        id = result and result[1] or False        
+        result = act_obj.read(cr, uid, [id], context=context)[0]
+        #compute the number of orders to display
+        order_ids = []
+        for so in self.browse(cr, uid, ids, context=context):
+            order_ids += [order.id for order in so.max_min_line_ids]            
+        result['domain'] = "[('id','in',["+','.join(map(str, order_ids))+"])]"
+        #_logger.error("COTIZACION 3---: %r", order_ids)
+        return result            
+
 class stock_warehouse(osv.osv):
     _inherit ='stock.warehouse'
     _columns = {
         'sequence_abastc_id': fields.many2one('ir.sequence', "Secuencia de abastecimiento", help="Secuencia utilizada para la composicion de productos."), 
     }
 
-class stock_abasteciminto_line(orm.Model):
+class stock_abastecimiento_line(orm.Model):
     _name = 'stock.abastecimiento.line'
     _columns = {
         'product_id': fields.many2one('product.product', 'Producto', required=True, ),
         'product_qty': fields.float('Cantidad solicitada', digits_compute=dp.get_precision('Product Unit of Measure'), required=True),
-        'product_qty_abast': fields.float('Cantidad abastecida', digits_compute=dp.get_precision('Product Unit of Measure'), required=True),
+        'product_qty_abast': fields.float('Cantidad abastecida', digits_compute=dp.get_precision('Product Unit of Measure'),),
         'abastec_id': fields.many2one('stock.abastecimiento', 'Abastecimiento',  ondelete='cascade'),
-
-
-
     }
 
-class stock_abasteciminto(orm.Model):
+class stock_abastecimiento(orm.Model):
     _name = 'stock.abastecimiento'
+
+    def _get_total_quantity(self, cr, uid, ids, field, args, context = None):
+        res = {}
+        i=0        
+        for abastecimiento in self.browse(cr, uid, ids, context = context):
+            res[abastecimiento.id] = {
+                'total_items': 0.0,
+                'total_quantity': 0.0,
+                'total_quantity_abast': 0.0,
+            }
+            res[abastecimiento.id]['total_quantity'] = sum([x.product_qty for x in abastecimiento.abastec_line_ids])
+            res[abastecimiento.id]['total_quantity_abast'] = sum([x.product_qty_abast for x in abastecimiento.abastec_line_ids])
+            for o in abastecimiento.abastec_line_ids:
+                i=i+1
+            res[abastecimiento.id]['total_items']= i    
+            #_logger.error("INNNNNN111111: %r", res[abastecimiento.id]['total_items'])
+        return res
+
     _columns = {
         'name': fields.char('Nombre'),
-        'warehouse_id': fields.many2one('stock.warehouse', 'Almacen', required=True, states={'done':[('readonly',True)], 'cancel':[('readonly',True)]}),
-        'date': fields.datetime('Fecha creacion', required=True, select=1, states={'done':[('readonly',True)],'cancel':[('readonly',True)]}),
-        'abastec_line_ids': fields.one2many('stock.abastecimiento.line', 'abastec_id', 'Abastecimiento de Productos', states={'done':[('readonly',True)],'cancel':[('readonly',True)]}),
+        'warehouse_id': fields.many2one('stock.warehouse', 'Almacen', required=True, states={'done':[('readonly',True)], 'progress':[('readonly',True)], 'cancel':[('readonly',True)]}),
+        'date': fields.datetime('Fecha creacion', required=True, select=1, states={'done':[('readonly',True)],'progress':[('readonly',True)]}),
+        'abastec_line_ids': fields.one2many('stock.abastecimiento.line', 'abastec_id', 'Abastecimiento de Productos', states={'done':[('readonly',True)],'progress':[('readonly',True)], 'progress':[('readonly',True)]}),
         'user_id': fields.many2one('res.users', 'Usuario', select=True, track_visibility='onchange'),         
-        'state': fields.selection([('draft','Vigente'),('done','Obsoleto'),('cancel','Cancelado')],string='Estado',readonly=True,required=True),
-        'fecha_abast': fields.datetime('Fecha abastecimiento', required=True, select=1, states={'done':[('readonly',True)],'cancel':[('readonly',True)]}),
-
+        'state': fields.selection([('draft','Nuevo'),('progress','Pendiente'),('done','Abastecido'),('cancel','Anulado')],string='Estado',readonly=True,required=True),
+        'fecha_abast': fields.datetime('Fecha abastecimiento', required=True, select=1, states={'done':[('readonly',True)],'progress':[('readonly',True)], 'progress':[('readonly',True)]}),
+        'picking_ids': fields.one2many('stock.picking', 'abastec_picking_id', 'Picking Productos', states={'done':[('readonly',True)],'progress':[('readonly',True)], 'progress':[('readonly',True)]}),
+        'total_items': fields.function(_get_total_quantity, type='float', string = 'Total items', multi='all'),
+        'total_quantity': fields.function(_get_total_quantity, type='float', string = 'Total productos solicitados', multi='all'),   
+        'total_quantity_abast': fields.function(_get_total_quantity, type='float', string = 'Total productos abastecidos', multi='all'),   
     }
     _defaults = {
         'name': lambda obj, cr, uid, context: '/',
@@ -198,10 +249,11 @@ class stock_abasteciminto(orm.Model):
         'state': 'draft',
         'user_id': lambda obj, cr, uid, context: uid,        
    }
+    _order='fecha_abast desc, name desc'   
     def create(self, cr, uid, vals, context=None):
         if context is None:
             context = {}           
-        abastec_id = super(stock_abasteciminto, self).create(cr, uid, vals, context=context)
+        abastec_id = super(stock_abastecimiento, self).create(cr, uid, vals, context=context)
 
         warehouse_id = vals.get('warehouse_id', [])
         warehouse_obj =  self.pool.get('stock.warehouse')
@@ -215,6 +267,17 @@ class stock_abasteciminto(orm.Model):
             raise osv.except_osv(_('Error!'),_('El almacen no tiene asignado Secuencia de Abastecimiento'))
             
         return abastec_id
+
+    def button_vigente(self, cr, uid, ids, context=None):
+        for value in self.browse(cr, uid, ids, context=context):
+            if not value.abastec_line_ids:
+                raise osv.except_osv(_('Error!'),_('No puede solicitar abastecimiento sin ningun producto, debe presionar el Boton "Calcular abastecimiento" primero!'))
+        self.write(cr, uid, ids, { 'state' : 'progress' })
+        return True
+
+    def button_cancel(self, cr, uid, ids, context=None):
+        self.write(cr, uid, ids, { 'state' : 'cancel' })
+        return True  
 
     def calcular_abastecimiento (self, cr, uid, ids, context=None):
         if context is None:
@@ -243,7 +306,7 @@ class stock_abasteciminto(orm.Model):
                             stock_abastec_line = {'product_qty': val[0]['product_max_qty']- prod.qty_available,'abastec_id':value.id }
                             stock_abastec_obj.write(cr, uid, prod_ids, stock_abastec_line, context)
                     else:
-                        stock_abastec_line = {'product_id': prod.id, 'product_qty': val[0]['product_max_qty']- prod.qty_available,'abastec_id':value.id }                     
+                        stock_abastec_line = {'product_id': prod.id,'product_qty_abast': 0.0, 'product_qty': val[0]['product_max_qty']- prod.qty_available,'abastec_id':value.id }                     
                         stock_abastec_obj.create(cr,uid,stock_abastec_line,context)                                            
         return True
 
@@ -273,12 +336,14 @@ class stock_abasteciminto(orm.Model):
             #'name': '/',
             #'origin': order.name + ((order.origin and (':' + order.origin)) or ''),
             'date': datetime.today(),
-            'partner_id': '',
+            'partner_id': 1,
             'invoice_state': 'none',
             'type': 'internal',
             'move_lines' : [],
             'location_id' : location_id,
             'location_dest_id': location_dest_id[0],
+            'abastec_picking_id': order.id,
+            'stock_journal_id':1,
         }
 
     def _create_picking(self,cr, uid, order, lines, picking_id=False, context=None):
@@ -324,5 +389,11 @@ class stock_abasteciminto(orm.Model):
     def generar_guia(self, cr, uid, ids, context=None):
         for order in self.browse(cr, uid, ids, context=context):
             self._create_picking(cr, uid, order, order.abastec_line_ids, None, context=context)
+            self.write(cr, uid, order.id, {'state': 'done'}, context)            
         return True
     
+class stock_picking(orm.Model):
+    _inherit='stock.picking'
+    _columns= {
+        'abastec_picking_id': fields.many2one('stock.abastecimiento', 'Abastecimiento Stock', ondelete='cascade'),
+    }

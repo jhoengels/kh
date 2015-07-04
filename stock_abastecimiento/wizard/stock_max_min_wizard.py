@@ -19,10 +19,33 @@
 #
 ##############################################################################
 
+import time
 
+from openerp.osv import osv, fields
+import openerp.addons.decimal_precision as dp
 
-import stock_abastecimiento
-import wizard
+import logging
+
+_logger = logging.getLogger(__name__)
+
+class stock_abastecimiento_wizard(osv.osv_memory):
+    _name = 'stock.max.min.wizard'
+    _columns = {
+        'product_ids': fields.many2many('product.product', 'stock_abastecimiento_product_rel', 'product_id', 'wizard_id', 'Producto stock max min'), 
+    }
+    def agregar_productos(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+        datas = {'ids': context.get('active_ids', [])}
+        res = self.read(cr, uid, ids, ['product_ids'], context=context)
+        res = res and res[0] or {}        
+        stock_max_min_line_obj = self.pool.get('stock.max.min.line')
+        for product_id in res['product_ids']:
+        	vals = {'max_min_id':datas['ids'][0],'product_id': product_id}
+        	#_logger.error("INNNNNN111111: %r", context)
+        	stock_max_min_line_obj.create(cr, uid, vals)
+        return True
+
 
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

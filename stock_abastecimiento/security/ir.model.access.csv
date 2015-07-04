@@ -1,4 +1,7 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_abastec_gestor,stock.max.min gestor,model_stock_max_min,group_abastec_stock,1,1,1,1
-access_abastec_gestor_line_gestor,stock.max.min.line gestor,model_stock_max_min_line,group_abastec_stock,1,1,1,1
-
+access_stock_max_min_nuevo,stock.max.min nuevo,model_stock_max_min,group_abastec_stock_max_min,1,1,1,0
+access_stock_max_min_line_nuevo,stock.max.min.line nuevo,model_stock_max_min_line,group_abastec_stock_max_min,1,1,1,1
+access_abastec_gestor,stock.abastecimiento gestor,model_stock_abastecimiento,group_abastec_stock_nuevo,1,1,1,0
+access_abastec_line_gestor,stock.abastecimiento.line gestor,model_stock_abastecimiento_line,group_abastec_stock_nuevo,1,1,1,0
+access_abastec_principal,stock.abastecimiento principal,model_stock_abastecimiento,group_abastec_stock,1,1,0,0
+access_abastec_line_principal,stock.abastecimiento.line principal,model_stock_abastecimiento_line,group_abastec_stock,1,1,0,0

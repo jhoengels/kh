@@ -1,8 +1,37 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <openerp>
    <data noupdate="1">
+
+        <!-- Solo cierto  grupos pueden crear reglas de stock de max y min de productos -->
+        <record id="group_abastec_stock_max_min" model="res.groups">
+            <field name="name">GENERAR STOCK MAX MIN</field>
+            <field name="users" eval="[(4, ref('base.user_root'))]"/>
+        </record>  
+
+        <!-- Solo cierto  grupos pueden Generar nuevas solicitudes de abasteciientos de productos --> 	
+        <record id="group_abastec_stock_nuevo" model="res.groups">
+            <field name="name">GENERAR ABASTECIMIENTO</field> 
+            <field name="users" eval="[(4, ref('base.user_root'))]"/>
+        </record> 
+
+        <!-- Solo cierto  grupos pueden generar guias de abasteciientos de productos -->
         <record id="group_abastec_stock" model="res.groups">
-            <field name="name">ABASTECIMIENTO</field> <!-- Solo cierto  grupos pueden actualizar stock del form producto-->
+            <field name="name">ABASTECIMIENTO PRINCIPAL</field> 
+            <field name="users" eval="[(4, ref('base.user_root'))]"/>
         </record>
+
+        <!-- abastecimiento por almacen -->
+        <record id="stock_abastec_rule" model="ir.rule">
+            <field name="name">VER ABASTECIMIENTO X ALMACEN</field>
+            <field model="ir.model" name="model_id" ref="model_stock_abastecimiento"/>
+            <field name="domain_force">[('warehouse_id.lot_stock_id','in',[x.id for x in user.location_ids])]</field>
+            <field eval="1" name="perm_unlink"/>
+            <field eval="1" name="perm_write"/>
+            <field eval="1" name="perm_read"/>
+            <field eval="1" name="perm_create"/>
+            <field name="groups" eval="[(4, ref('stock_abastecimiento.group_abastec_stock_nuevo'))]"/>
+        </record>
+
+    
    </data>
 </openerp>

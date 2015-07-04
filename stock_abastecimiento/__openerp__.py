@@ -31,10 +31,8 @@
     "data" : [
             'security/security.xml',
             'security/ir.model.access.csv',
-            'stock_abastecimiento.xml',
-            #'sequence.xml',
-            #'report.xml',
-            #'location_data.xml',            
+            'wizard/stock_max_min_wizard.xml',
+            'stock_abastecimiento.xml',  
 
     ],
     "demo_xml" : [
