@@ -96,7 +96,7 @@ class pos_report_fact_venta(report_sxw.rml_parse):
         pos_order_obj = self.pool.get('pos.order')
         data=[]
         res = {}
-        pos_order_id = pos_order_obj.search(self.cr,self.uid,['|',('state','=','done'),('state','=','paid'),('pos_reference','ilike','TF 0001%'),('session_id','=',session_id)])
+        pos_order_id = pos_order_obj.search(self.cr,self.uid,['|',('state','=','done'),('state','=','paid'),('pos_reference','ilike','TF 00%'),('session_id','=',session_id)])
         #  
         for id in pos_order_id:
             for pos_line in pos_order_obj.browse(self.cr, self.uid, [id]): 
