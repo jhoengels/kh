@@ -27,6 +27,7 @@
 ##############################################################################
 
 from osv import fields, osv
+import openerp.addons.decimal_precision as dp
 
 import logging
 _logger = logging.getLogger(__name__)
@@ -63,6 +64,7 @@ class mrp_production(osv.osv):
         return production_id   
 
     def action_production_end(self, cr, uid, ids, context=None):
+
         write_res = super(mrp_production, self).action_production_end(cr, uid, ids, context) 
         if write_res:
             for production in self.pool.get('mrp.production').browse(cr, uid, ids, context=None):
@@ -78,15 +80,24 @@ class mrp_production(osv.osv):
                     for line in production.bom_id.bom_lines:
                         new_standard_price += line.product_id.standard_price*line.product_qty
                     new_standard_price_final = new_standard_price + production.bom_id.mod + production.bom_id.cif/100.00*production.product_id.list_price    
-                    product_obj.write(cr, uid, [product_id], {'standard_price': new_standard_price_final}, context)    
+                    
+                    #Actualizando el PRECIO promedio del producto a fabricar
 
+                    product = product_obj.browse(cr, uid, [product_id], context)[0]
+                    if (product.qty_available-production.product_qty)<=0:
+                        product_obj.write(cr, uid, [product_id], {'standard_price': new_standard_price_final}, context)
+                    else: 
+                        new_price_promedio = ((product.qty_available-production.product_qty)*product.standard_price + production.product_qty*new_standard_price_final)/(product.qty_available)                        
+                        product_obj.write(cr, uid, [product_id], {'standard_price': new_price_promedio}, context)    
+                    #Fin actualizar PRECIO
+
+                    #Actualiza el price_unit del mov. en stock.move del producto consumido
                     for move in production.move_lines2:
                         stock_obj.write(cr, uid, move.id, {'price_unit': move.product_id.standard_price}, context)
                         #_logger.error("COTIZACION 1---: %r", move.name )
-
+                    #Actualiza el price_unit del mov. en stock.move del producto producido
                     for move in production.move_created_ids2:
                         stock_obj.write(cr, uid, move.id, {'price_unit': new_standard_price_final}, context)
-                        #_logger.error("COTIZACION 2---: %r", move.name )
 
         return write_res
 
@@ -94,7 +105,8 @@ class mrp_bom(osv.osv):
     _inherit= 'mrp.bom'
     _columns = {
         'mod': fields.float('Mano de obra directa',digits=(2,1)),
-        'cif': fields.float('Costos inderectos de fabricacion',digits=(2,1)),     
+        'cif': fields.float('Costos inderectos de fabricacion',digits=(2,1)), 
+        'product_qty': fields.float('Product Quantity', required=True, digits_compute=dp.get_precision('PrecioCompra')),   
     }
 
         
