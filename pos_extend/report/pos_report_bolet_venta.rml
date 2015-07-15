@@ -2,7 +2,32 @@
 <document filename="test.pdf">
   <template pageSize="(595.0,842.0)" title="Test" author="Martin Simon" allowSplitting="20">
     <pageTemplate id="first">
-      <frame id="first" x1="57.0" y1="57.0" width="481" height="728"/>
+      <frame id="first" x1="57.0" y1="40.0" width="481" height="728"/>
+      <header>
+        <pageGraphics>
+            <stylesheet>
+                <!-- Set here the default font to use for all <para> tags -->
+                <paraStyle name='Normal' fontName="DejaVu Sans"/>
+                <paraStyle name="main_footer" fontSize="8.0" alignment="CENTER"/>
+            </stylesheet>
+            <!--Encabezado de pagina-->
+            <image x="1.7cm" y="27.5cm" height="65.0">[[company.logo or removeParentNode('image')]]</image>
+            <setFont name="Helvetica-Bold" size="8"/>
+            <!--<drawString x="1.7cm" y="27.8cm"></drawString> -->
+            [[ repeatIn(objects,'o') ]]
+            <drawString x="1.7cm" y="27.8cm"> [[ o.config_id.shop_id.shop_address ]] - [[ o.config_id.shop_id.state_id.name ]]</drawString>            
+            <drawString x="1.7cm" y="27.5cm"> Telef.: [[ o.config_id.shop_id.shop_telef ]]</drawString>
+            <drawString x="18.5cm" y="27.8cm">Página: <pageNumber/></drawString>
+            <drawString x="17.2cm" y="27.5cm"> [[ formatLang(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()), date_time=True) ]]</drawString>
+            <lines>1.7cm 27.4cm 20cm 27.4cm</lines>
+
+            <!--Pie de pagina-->
+            <lines>1.7cm 2.65cm 20cm 2.65cm</lines>
+            <place x="1.3cm" y="0cm" height="2.55cm" width="20.0cm">                
+                <para style="main_footer">Usuario : [[ user.name ]] - Página: <pageNumber/></para>
+            </place>
+        </pageGraphics>
+      </header>      
     </pageTemplate>
   </template>
   <stylesheet>

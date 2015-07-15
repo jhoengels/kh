@@ -92,6 +92,7 @@
     <images/>
   </stylesheet>
   <story>
+
     <para style="P6">[[repeatIn(objects,'o')]]</para>
     <para style="P6">[[ setLang(o.partner_id.lang) ]]</para>
     <blockTable colWidths="90.0,477.0" style="Table1">

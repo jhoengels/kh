@@ -28,7 +28,7 @@
 
                 </field>
                 <field name="session_id" position="after">
-                     <field name="es_factura" string="Facturada?" attrs="{'readonly': [('state','!=','draft')]}" />
+                    <field name="es_factura" string="Facturada?" attrs="{'readonly': [('state','!=','draft')]}" />
                 </field>
                 <field name="user_id" position="replace"/>
                 <field name="partner_id" position="after">
@@ -90,6 +90,11 @@
                 <field name="journal_id" position='after'>
                     <field name="ref_card"/>
                 </field>
+                <!-- para evitar agregar mas items luego de haber anulado el pago del ticket-->
+                <field name="lines" position='attributes'>
+                    <attribute name='readonly'>[('picking_id','!=',False)]</attribute>
+                </field>
+
 	        </field>
     	</record>
 

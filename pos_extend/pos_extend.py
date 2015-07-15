@@ -521,7 +521,13 @@ class pos_order(osv.osv):
             if rec.name:
                 raise osv.except_osv(_('ERROR!'), _('No se puede eliminar esta orden, por tener asignada un Numero de Venta, pero si puede Anular este ticket'))
         return super(pos_order, self).unlink(cr, uid, ids, context=context)        
-
+    
+    def action_paid(self, cr, uid, ids, context=None):
+        #self.write(cr, uid, ids, {'state': 'paid'}, context=context)
+        for id in ids:
+            cr.execute("UPDATE pos_order SET state='paid' WHERE id=%s", (id,))
+        self.create_picking(cr, uid, ids, context=context)
+        return True    
 pos_order()
 
 class pos_order_line(osv.osv):

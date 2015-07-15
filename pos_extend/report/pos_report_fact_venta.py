@@ -41,7 +41,7 @@ class pos_report_fact_venta(report_sxw.rml_parse):
         self.total_tarjeta= 0.0
         self.total_efectivo= 0.0
         self.localcontext.update({
-            'time': time,
+            'time': time,            
             'address': partner or False,
             'titlize': titlize,
             'factura_pago_tarjeta': self._ticket_factura_pago_tarjeta,

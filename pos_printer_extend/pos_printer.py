@@ -66,20 +66,15 @@ class pos_order(osv.osv):
         for order in self.browse(cr, uid, ids, context=context):
 
             ###############PARA AGREGAR EL NUMERO DE TICKET YA SEA FACTURA O BOLETA
-            session = self.pool.get('pos.session').browse(cr, uid, order.session_id.id, context)
-            config = self.pool.get('pos.config').browse(cr, uid, session.config_id.id, context)
             sequence_obj = self.pool.get('ir.sequence')
             #_logger.error("TICKET SESION: %r", config)
-            if config: #AÑADE LA IMPRESION DE SECUENCIA DE FACTURA O BOLETA
-                if order.es_factura:
-                    values = {'pos_reference': sequence_obj.get_id(cr, uid, config.sequencetf_id.id, context=context)}      
-                    #_logger.error("TICKET FACTURA: %r", values)  
-                    self.write(cr, uid, [order.id], values, context=context)
-                else:
-                    values = {'pos_reference': sequence_obj.get_id(cr, uid, config.sequencetb_id.id, context=context)}   
-                    #_logger.error("TICKET BOLETA: %r", values)     
-                    self.write(cr, uid, [order.id], values, context=context)
-            ###########FIN#########################3
+            if order.es_factura:
+                pos_reference = sequence_obj.get_id(cr, uid, order.session_id.config_id.sequencetf_id.id, context=context)      
+                cr.execute("UPDATE pos_order SET pos_reference=%s WHERE id=%s", (pos_reference,order.id))
+            else:
+                pos_reference = sequence_obj.get_id(cr, uid, order.session_id.config_id.sequencetb_id.id, context=context)   
+                cr.execute("UPDATE pos_order SET pos_reference=%s WHERE id=%s", (pos_reference,order.id))
+            ###########FIN#########################
 
             addr = order.partner_id and partner_obj.address_get(cr, uid, [order.partner_id.id], ['delivery']) or {}
             if order.almacendespacho_id:
@@ -102,7 +97,8 @@ class pos_order(osv.osv):
                     'location_dest_id': destination_id,
                     'state': 'auto',                    
                 }, context=context)
-                self.write(cr, uid, [order.id], {'picking_id': picking_id}, context=context)
+                #self.write(cr, uid, [order.id], {'picking_id': picking_id}, context=context)
+                cr.execute("UPDATE pos_order SET picking_id=%s WHERE id=%s", (picking_id,order.id))
                 location_id = order.almacendespacho_id.id           
 
                 for line in order.lines:
@@ -152,7 +148,8 @@ class pos_order(osv.osv):
                     #'location_dest_id': destination_id if not order.devolucion else order.shop_id.warehouse_id.lot_stock_id.id,
                     'location_dest_id': destination_id,
                 }, context=context)
-                self.write(cr, uid, [order.id], {'picking_id': picking_id}, context=context)
+                #self.write(cr, uid, [order.id], {'picking_id': picking_id}, context=context)
+                cr.execute("UPDATE pos_order SET picking_id=%s WHERE id=%s", (picking_id,order.id))
                 location_id = order.shop_id.warehouse_id.lot_stock_id.id            
 
                 for line in order.lines:
