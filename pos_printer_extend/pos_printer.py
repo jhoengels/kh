@@ -62,7 +62,6 @@ class pos_order(osv.osv):
         picking_obj = self.pool.get('stock.picking.out')
         partner_obj = self.pool.get('res.partner')
         move_obj = self.pool.get('stock.move')
-
         for order in self.browse(cr, uid, ids, context=context):
 
             ###############PARA AGREGAR EL NUMERO DE TICKET YA SEA FACTURA O BOLETA
@@ -75,7 +74,6 @@ class pos_order(osv.osv):
                 pos_reference = sequence_obj.get_id(cr, uid, order.session_id.config_id.sequencetb_id.id, context=context)   
                 cr.execute("UPDATE pos_order SET pos_reference=%s WHERE id=%s", (pos_reference,order.id))
             ###########FIN#########################
-
             addr = order.partner_id and partner_obj.address_get(cr, uid, [order.partner_id.id], ['delivery']) or {}
             if order.almacendespacho_id:
                 if order.partner_id:
@@ -106,6 +104,7 @@ class pos_order(osv.osv):
                         continue
                     move_obj.create(cr, uid, {
                         'name': line.descripcion,
+                        'partner_id': addr.get('delivery',False),
                         'product_uom': line.product_id.uom_id.id,
                         'product_uos': line.product_id.uom_id.id,
                         'picking_id': picking_id,
@@ -125,14 +124,12 @@ class pos_order(osv.osv):
                 wf_service.trg_validate(uid, 'stock.picking', picking_id, 'button_confirm', cr)
                 #picking_obj.force_assign(cr, uid, [picking_id], context)
                 picking_obj.action_assign(cr, uid, [picking_id], context)
-
                 
             else:
                 if order.partner_id:
                     destination_id = order.partner_id.property_stock_customer.id 
                 else:
                     destination_id = partner_obj.default_get(cr, uid, ['property_stock_customer'], context=context)['property_stock_customer'] 
-
                 picking_id = picking_obj.create(cr, uid, {
                     'origin': order.name,
                     'partner_id': addr.get('delivery',False),
@@ -157,6 +154,7 @@ class pos_order(osv.osv):
                         continue
                     move_obj.create(cr, uid, {
                         'name': line.descripcion,
+                        'partner_id': addr.get('delivery',False),
                         'product_uom': line.product_id.uom_id.id,
                         'product_uos': line.product_id.uom_id.id,
                         'picking_id': picking_id,
@@ -171,13 +169,11 @@ class pos_order(osv.osv):
                         'location_id': location_id if line.qty >= 0 else destination_id,
                         'location_dest_id': destination_id if line.qty >= 0 else location_id,
                     }, context=context)
+                
                 wf_service = netsvc.LocalService("workflow")
                 wf_service.trg_validate(uid, 'stock.picking', picking_id, 'button_confirm', cr)
                 picking_obj.force_assign(cr, uid, [picking_id], context)
 
-            
-
         return True
-
-
+      
 
