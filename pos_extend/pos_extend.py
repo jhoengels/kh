@@ -528,6 +528,17 @@ class pos_order(osv.osv):
             cr.execute("UPDATE pos_order SET state='paid' WHERE id=%s", (id,))
         self.create_picking(cr, uid, ids, context=context)
         return True    
+
+    def copy(self, cr, uid, id, default=None, context=None):
+        if not default:
+            default = {}
+        default.update({
+            'date_order': time.strftime('%Y-%m-%d %H:%M:%S'),
+            'pos_reference': False,
+        })
+        return super(pos_order, self).copy(cr, uid, id, default, context=context)    
+
+
 pos_order()
 
 class pos_order_line(osv.osv):
