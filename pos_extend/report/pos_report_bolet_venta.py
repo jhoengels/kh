@@ -101,7 +101,6 @@ class pos_report_bolet_venta(report_sxw.rml_parse):
         for id in pos_order_id:
             for pos_line in pos_order_obj.browse(self.cr, self.uid, [id]): 
                 for pago in pos_line.statement_ids:
-                    if pago.journal_id.forma_pago =='efectivo': 
                         #_logger.error("ORDER sesion: %r", pago.journal_id.name.find(' LA VICTORIA')) 
                         if pago.journal_id.name.find(' LA VICTORIA') != -1:
                             res= {
@@ -133,6 +132,18 @@ class pos_report_bolet_venta(report_sxw.rml_parse):
                             }
                             self.total_efectivo += pago.amount
                             data.append(res) 
+
+                if not pos_line.statement_ids:                
+                    res= {
+                    'ref':pos_line.pos_reference,
+                    'name':pos_line.name,                       
+                    'name_tarjeta': 'OBSEQUIO/DONACION',
+                    'ref_voucher': False,
+                    'monto': 0.0,
+                    }
+                    _logger.error("ORDER: %r", res) 
+                    self.total_efectivo += 0.0
+                    data.append(res)
                                                                
         return data               
     def _get_total_efectivo(self):
