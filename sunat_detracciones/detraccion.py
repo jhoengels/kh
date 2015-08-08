@@ -27,6 +27,7 @@
 ##############################################################################
 
 from osv import osv, fields, orm
+import base64 
 import time
 from tools.translate import _
 import logging
@@ -71,15 +72,18 @@ class sunat_detraccion_adquiriente(osv.osv):
         'state': fields.selection(
           [('draft','Borrador'),('done','Pagado'),('cancel','Anulado')],'Estado',readonly=True,required=True
         ),
-        'ruc_adquiriente': fields.char('Ruc adquiriente', size=11, required=True),
-        'n_adquiriente':fields.many2one('res.partner','Nombre/Razon Social',ondelete='cascade',required=True),
-        'anio': fields.char('anio',size=4,required=True,),
-        'n_correlativo': fields.char('Numero correlativo',size=4,required=True),
-        'n_lote': fields.char('Numero de lote',size=6),      
+        'ruc_adquiriente': fields.char('Ruc adquiriente', size=11, required=True, states={'done':[('readonly',True)], 'cancel':[('readonly',True)]}),
+        'n_adquiriente': fields.many2one('res.partner','Nombre/Razon Social',ondelete='cascade',required=True,states={'done':[('readonly',True)], 'cancel':[('readonly',True)]}),
+        #'anio': fields.char('anio',size=4,required=True,),
+        'anio': fields.selection([('2015','2015'),('2014','2014'),('2013','2013')],'Anio',required=True, states={'done':[('readonly',True)], 'cancel':[('readonly',True)]} ),
+        'n_correlativo': fields.char('Numero correlativo',size=4,required=True, states={'done':[('readonly',True)], 'cancel':[('readonly',True)]}),
+        'n_lote': fields.char('Numero de lote',size=6, states={'done':[('readonly',True)], 'cancel':[('readonly',True)]}),      
         #'i_total': fields.char('Importe total',size=15),
-        'i_total':  fields.function(_amount_all,type="integer", method=True, string="Importe total"),
-        'fecha': fields.datetime(string='Fecha'),
-        'proveedores_ids': fields.one2many('sunat.detraccion.adquiriente.proveedor','adquiriente_id',string="Nuevo proveedor"),
+        'i_total':  fields.function(_amount_all,type="integer", method=True, string="Importe total", states={'done':[('readonly',True)], 'cancel':[('readonly',True)]}),
+        'fecha': fields.datetime(string='Fecha', states={'done':[('readonly',True)], 'cancel':[('readonly',True)]}),
+        'proveedores_ids': fields.one2many('sunat.detraccion.adquiriente.proveedor','adquiriente_id',string="Nuevo proveedor", states={'done':[('readonly',True)], 'cancel':[('readonly',True)]}),
+        'txt_filename': fields.char(''),
+        'txt_binary': fields.binary()
         }
     _order='fecha desc'    
     _defaults = {
@@ -132,6 +136,95 @@ class sunat_detraccion_adquiriente(osv.osv):
         self.write(cr, uid, detraccion_id, vals, context=context)
         return detraccion_id
     
+    def generate_file(self, cr, uid, ids, context=None):
+        """
+        function called from button
+        """
+        name_save =  None
+        formato = ""
+        formato1 = ""
+        list_result = []
+        list_result1 = []
+        for value in self.browse(cr, uid, ids):
+            name_save = value.name
+            ind_maestra = '*'
+            ruc = value.ruc_adquiriente
+
+            name= value.n_adquiriente.name
+            #COMPLETAR CON CEROS AL NOMBRE
+            nuevo_name = None
+            if len(name) < 35:
+                indice = 1
+                nuevo_name = name
+                while indice <= 35 - len(name) :
+                    nuevo_name =  nuevo_name + ' '
+                    indice += 1 
+            elif len(name) == 35:
+                nuevo_name = name
+            else:
+                nuevo_name = name[:35]
+
+            lote = value.n_lote
+
+            total = str(value.i_total)
+            #COMPLETAR CON CEROS AL MONTO
+            nuevo_total = None
+            if len(total) < 13:
+                indice = 1
+                nuevo_total = total
+                while indice <= 13 - len(total) :
+                    nuevo_total = '0' + nuevo_total
+                    indice += 1
+                nuevo_total = nuevo_total + '00' 
+                #_logger.error("MI VALOR 4: %r", nuevo_total)
+            else:
+                nuevo_total =  total
+
+            formato = str("%s%s%s%s%s\r\n"%(ind_maestra,ruc,nuevo_name,lote,nuevo_total))
+
+            for line in value.proveedores_ids:
+                tipo_doc = line.tipo_doc
+                ruc_prove = line.ruc_proveedor
+                name_proveedor = '                                   '
+                n_proforma = '000000000'
+                codigo_bien_servic = line.tipo_bien_servicio
+                n_banco_provee = line.n_cuenta
+
+                impor_deposit = str(line.importe)
+                nuevo_importe = None
+                if len(impor_deposit) < 13:
+                    indice = 1
+                    nuevo_importe = impor_deposit
+                    while indice <= 13 - len(impor_deposit) :
+                        nuevo_importe = '0' + nuevo_importe
+                        indice += 1 
+                    nuevo_importe = nuevo_importe + '00'
+                tipo_operac = line.tipo_operacion
+                period_tribu = line.p_tributario
+                tipo_comprob = line.tipo_comprobante
+                serie_comprob = line.s_comprobante
+                numer_comprob = line.n_comprobante
+                formato1 += str("%s%s%s%s%s%s%s%s%s%s%s%s\r\n"%(tipo_doc,ruc_prove,name_proveedor,n_proforma,codigo_bien_servic,n_banco_provee,nuevo_importe,tipo_operac,period_tribu,tipo_comprob,serie_comprob,numer_comprob))
+
+        #_logger.error("MI VALOR 4: %r", formato1[:-2])
+        return self.write(cr, uid, ids, {
+            'txt_filename': name_save+'.txt',
+            'txt_binary': base64.encodestring(formato + formato1[:-2])
+        }, context=context)    
+
+    def button_done(self, cr, uid, ids, context=None):
+        self.write(cr, uid, ids, { 'state' : 'done' })
+        return True      
+    def button_cancel(self, cr, uid, ids, context=None):
+        self.write(cr, uid, ids, { 'state' : 'cancel' })
+        return True  
+    #Evita eliminar  cuando esta en estado pagado.
+    def unlink(self, cr, uid, ids, context=None):
+        for rec in self.browse(cr, uid, ids, context=context):
+            if rec.state == 'draft' or rec.state == 'done' :
+                raise osv.except_osv(_('ERROR!'), _('No se puede eliminar, debe de anular primero!'))
+        return super(sunat_detraccion_adquiriente, self).unlink(cr, uid, ids, context=context)             
+
 class sunat_detraccion_adquiriente_proveedor(osv.osv):
     _name = 'sunat.detraccion.adquiriente.proveedor'
     _columns = {
@@ -174,8 +267,8 @@ class sunat_detraccion_adquiriente_proveedor(osv.osv):
             ('024','024-Comision mercantil'),
             ('025','025-Fabricacion de bienes por encargo'),
             ('026','026-Servicio de transporte de personas'),
-            ('027','027-Servicio de transporte de bienes realizado por víi terrestre'),
-            ('028','028-Servicio de transporte publico de pasajeros realizado por via terrestre'),
+            ('027','027-Servicio de transporte de bienes realizado por via terrestre'),
+            #('028','028-Servicio de transporte publico de pasajeros realizado por via terrestre'),
             ('029','029-Algodón  en rama  sin desmotar'),
             ('030','030-Contratos de construccion'),
             ('031','031-Oro gravado con el IGV (2)'),
@@ -185,22 +278,23 @@ class sunat_detraccion_adquiriente_proveedor(osv.osv):
             ('035','035-Bienes exonerados del IGV (3)'),
             ('036','036-Oro y demás minerales metálicos exonerados del IGV (3)'),
             ('037','037-Demas servicios gravados con el IGV'),
-            ('038','038-Espectáculos públicos no culturales (4)'),
+            ('038','038-Espectáculos públicos no deportivos (4)'),
             ('039','039-Minerales no metálicos (3)'),
-            ('039','039-Bien inmueble gravado con el IGV  (5)'),
-            ('040','040-Plomo (6)'),
+            ('040','040-Bien inmueble gravado con el IGV  (5)'),
+            ('041','041-Plomo (6)'),
             ], 'Tipo de bien o servicio',required=True,),
         'tipo_operacion': fields.selection([
-            ('01','01-Venta de bienes o prestacion de servicio'),
-            ('02','02-Retiro de bienes'),
-            ('03','03-Traslado que no son venta'),
-            ('04','04-Venta a traves de ña bolsa de produictos'),
-            ('05','05-Venta de bienes exonerados del IGV'),
+            ('01','01-Venta de bienes muebles o inmuebles, prestación de servicios o contratos de construcción gravados con el IGV'),
+            ('02','02-Retiro de bienes gravados con el IGV'),
+            ('03','03-Traslado de bienes fuera del centro de producción, así como desde cualquier zona geográfica que goce de beneficios tributarios hacia el resto del país, cuando dicho traslado no se origine en una operación de venta.'),
+            ('04','04-Venta de bienes gravada con el IGV realizada a través de la Bolsa de Productos.'),
+            ('05','05-Venta de bienes exonerada del IGV'),
             ],'Tipo de Operacion',required=True,),
         #'importe': fields.char('Importe del deposito',size=15),
         #'importe': fields.float('Importe',digits=(2,1)), 
         'importe': fields.integer('Importe',required=True),
         'p_tributario': fields.char('Periodo Tributario',size=6,required=True),
+        #'p_tributario': fields.selection([('2015','2015'),('2014','2014'),('2013','2013')],'Periodo Tributario',readonly=True,required=True ),
         'tipo_comprobante': fields.selection([
             ('01','01-Factura'),
             ('03','03-Boleta'),

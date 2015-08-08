@@ -40,7 +40,7 @@
             'security/security.xml',
             'security/ir.model.access.csv',
             "detraccion_view.xml",            
-            "wizard/detraccion_wizard.xml",
+            #"wizard/detraccion_wizard.xml",
         ],
 
     "demo_xml": [
