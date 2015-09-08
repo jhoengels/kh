@@ -55,6 +55,11 @@ class tipo_documento_sequence_wizard(osv.osv_memory):
         wizard = self.browse(cr, uid, ids[0], context)
         #_logger.error("updateee: %r", wizard.next_number)
         sequence_obj.write(cr, uid, wizard.sequence_id.id, {'number_next_actual': wizard.next_number})
+         
+        active_id = context and context.get('active_id', False)
+        if active_id:
+            inv_obj = self.pool.get('account.invoice')
+            inv_obj.write(cr, uid, active_id, {'next_sequence': "[{0}]".format(wizard.next_number)})
         return True
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
