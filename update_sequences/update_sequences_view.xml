@@ -1,49 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
 	<data>
-        <!--Para el formulario picking de traslado interno -->
-        <record id="update_sequences_form_inherit" model="ir.ui.view">
-            <field name="name">update.stock.picking.sequences.view.form</field>
-            <field name="model">stock.picking</field>
-            <field name="inherit_id" ref="stock.view_picking_form"/>
-            <field name="arch" type="xml">
-                <field name="name" position="after">
-                    <button name="%(update_sequences.action_view_update_sequences)d" string="Ver Correlativo Guia" type="action" class="oe_link" attrs="{'invisible': ['|',('state', '=', 'done'),('stock_journal_id', '=', False)]}"/>
-                </field>
-            </field>
-        </record>
-    </data>
-
-    <!--Para el formulario picking de salida a cliente-->
-    <data>
-        <record id="update_sequences_out_form_inherit" model="ir.ui.view">
-            <field name="name">update.stock.picking.out.sequences.view.form</field>
-            <field name="model">stock.picking.out</field>
-            <field name="inherit_id" ref="stock.view_picking_out_form"/>
-            <field name="arch" type="xml">
-                <field name="name" position="after">
-                    <button name="%(update_sequences.action_view_update_sequences)d" string="| Ver Correlativo Guia" type="action" class="oe_link" attrs="{'invisible': ['|',('state', '=', 'done'),('stock_journal_id', '=', False)]}"/>
-                </field>
-            </field>
-        </record>
-    </data>
-
-
     <!--Para el formulario invoice de cliente-->
-    <data>
         <record id="update_sequences_account_form_inherit" model="ir.ui.view">
             <field name="name">update.account.invpice.sequences.view.form</field>
             <field name="model">account.invoice</field>
             <field name="inherit_id" ref="account.invoice_form"/>
             <field name="arch" type="xml">
                 <field name="internal_number" position="after">
-                    <button name="%(update_sequences.action_view_update_invoice_sequences)d" string="| Ver Correlativo Fact/Bol" type="action" class="oe_link"  attrs="{'invisible': ['|',('state', '=', 'done'),('journal_id','=',False)]}"/>
+                    <button name="%(update_sequences.action_view_update_invoice_sequences)d" string="| Ver Correlativo Fact/Bol" type="action" class="oe_link" attrs="{'invisible': [('state', '!=', 'draft')]}"/>
                 </field>
             </field>
         </record>
-    </data>
 
-    <data>
         <record id="ir_sequence_form_inherit" model="ir.ui.view">
             <field name="name">ir.sequence.update.view.form</field>
             <field name="model">ir.sequence</field>
@@ -54,6 +23,7 @@
                 </field>
             </field>
         </record>
+
     </data>
 
 </openerp>

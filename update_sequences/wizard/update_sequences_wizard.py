@@ -26,22 +26,35 @@ _logger = logging.getLogger(__name__)
 
 class tipo_documento_sequence_wizard(osv.osv_memory):
     _name = "tipo.documento.sequence.wizard"
+
     _columns = {
         'sequence_id' : fields.many2one('ir.sequence', 'Secuencia'),
         'next_number' : fields.char('Siguiente numero'),
     }
-    def onchange_sequence_id(self, cr, uid, ids, sequence_id, context=None):        
+
+    def _default_sequence(self, cr, uid, context=None):
+        active_id = context and context.get('active_id', False)
+        if active_id:
+            inv = self.pool.get('account.invoice').browse(cr, uid, active_id, context=context)
+            return inv.journal_id.sequence_id.id
+        else:
+            return ''
+
+    _defaults = {
+        'sequence_id' : _default_sequence,
+    }
+
+    def onchange_sequence_id(self, cr, uid, ids, sequence_id, context=None):
         if sequence_id:
             sequence = self.pool.get('ir.sequence').browse(cr, uid, sequence_id, context=context)
             return {'value': {'next_number': sequence.number_next_actual}}
         return {'value': {'next_number': 0}}
 
     def update_sequence(self, cr, uid, ids, context=None):
-        sequence_obj = self.pool.get('ir.sequence')        
+        sequence_obj = self.pool.get('ir.sequence')
         wizard = self.browse(cr, uid, ids[0], context)
-        #_logger.error("updateee: %r", wizard.next_number) 
+        #_logger.error("updateee: %r", wizard.next_number)
         sequence_obj.write(cr, uid, wizard.sequence_id.id, {'number_next_actual': wizard.next_number})
-
         return True
-    
+
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
